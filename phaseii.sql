@@ -102,23 +102,22 @@ insert into artists values
 
 insert into art values
     (12345, 'Dora Mar', 32000);
-insert into art values
-    (12346, 'For The Love of God', 58000);
-insert into art values
-    (12347, 'Han Dynasty Vase', 45000);
-insert into art values
-    (12348, 'Water Lilies', 92000);
-insert into art values
-    (12349, 'The Dance', 22000);
-
-insert into sculpture values
-    (12346, 'Platinum and Diamonds', 'Modern');
-insert into sculpture values
-    (12347, 'Han Dynasty Vase, paint', 'Asian');
 insert into painting values
     (12345, 'Oil on Canvas', 'Western');
+insert into art values
+    (12346, 'For The Love of God', 58000);
+insert into sculpture values
+    (12346, 'Platinum and Diamonds', 'Modern');
+insert into art values
+    (12347, 'Han Dynasty Vase', 45000);
+insert into sculpture values
+    (12347, 'Han Dynasty Vase, paint', 'Asian');
+insert into art values
+    (12348, 'Water Lilies', 92000);
 insert into painting values
     (12348, 'Oil on Canvas', 'Western');
+insert into art values
+    (12349, 'The Dance', 22000);
 insert into painting values
     (12349, 'Oil on Canvas', 'Western');
 
@@ -158,7 +157,7 @@ insert into issue_transaction values
 insert into purchase values
     (54321, 20140531, 123, 'cash', null, 21000, 12349);
 insert into purchase values
-    (54323, 20140530, 124, 'mc', 3335 2324 1555 4555, 32000, 12345);   
+    (54323, 20140530, 124, 'mc', 3335 2324 1555 4555, 32000, 12345);
 insert into purchase values
     (54324, 20140531, 125, 'visa', 5665 5468 5648 6548, 80000, 12346);
 insert into return values
@@ -168,10 +167,3 @@ insert into return values
 
 insert into receives_commission values
     (54324, 'Damien Hirst', 5556489895, 29000);
-    
-
-    
-
-
-
-
