@@ -4,15 +4,19 @@ USE ARTGALLERYDB;
 
 
 create table clients
-  (name varchar(30) not null,
-    address varchar(30),
+  (fname varchar(30),
+    lname varchar(30) not null,
+    street varchar(30),
+    city varchar(30),
+    prov varchar(30),
+    pcode varchar(30),
     email varchar(30),
     phone int not null,
-    PRIMARY KEY (name, phone));
+    PRIMARY KEY (lname, phone));
 
 create table issue_transaction
   (transaction_id int not null PRIMARY KEY,
-    name varchar(30) not null,
+    lname varchar(30) not null,
     phone int not null);
 
 create table art
@@ -56,30 +60,34 @@ create table purchase_return
     foreign key (serial_number) references art (serial_number) on delete cascade on update cascade);
 
 create table artists
-  (name varchar(30) not null,
-    studio_address varchar(30),
+  (fname varchar(30),
+    lname varchar(30) not null,
+    street varchar(30),
+    city varchar(30),
+    prov varchar(30),
+    pcode varchar(30),
     email varchar(30),
     phone int not null,
     status varchar(30),
-    PRIMARY KEY (name, phone));
+    PRIMARY KEY (lname, phone));
 
 create table supplies
-  (name varchar(30) not null,
+  (lname varchar(30) not null,
     phone int not null,
     commission_rate decimal(65,2) unsigned,
     serial_number int not null,
-    PRIMARY KEY (name, phone, serial_number),
-    foreign key (name, phone) references artists (name, phone) on delete cascade on update cascade,
+    PRIMARY KEY (lname, phone, serial_number),
+    foreign key (lname, phone) references artists (lname, phone) on delete cascade on update cascade,
     foreign key (serial_number) references art (serial_number) on delete cascade on update cascade);
 
 create table receives_commission
   (transaction_id int not null,
-    name varchar(30) not null,
+    lname varchar(30) not null,
     phone int not null,
     amount decimal(65,2) unsigned,
-    PRIMARY KEY (transaction_id, name, phone),
+    PRIMARY KEY (transaction_id, lname, phone),
     foreign key (transaction_id) references issue_transaction (transaction_id) on delete cascade on update cascade,
-    foreign key (name, phone) references artists (name, phone) on delete cascade on update cascade);
+    foreign key (lname, phone) references artists (lname, phone) on delete cascade on update cascade);
 
 insert into artists values
   ('Pablo Picasso', 'Paris, France', 'guernica37@spain.com', 5556925253, 'inactive');
