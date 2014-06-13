@@ -1,3 +1,4 @@
+set Foreign_key_checks =0;
 drop table if exists clients;
 drop table if exists issue_transaction;
 drop table if exists receives_commission;
@@ -168,4 +169,5 @@ insert into receives_commission values
     (54324, 'Damien Hirst', 5556489895, 29000);
     
 
-    
+    set Foreign_key_checks =1;
+
