@@ -1,91 +1,91 @@
-drop table clients;
-drop table issue_transaction;
-drop table receives_commission;
-drop table purchase;
-drop table return;
-drop table artists;
-drop table supplies;
-drop table sculpture;
-drop table painting;
-drop table art;
+drop table if exists clients;
+drop table if exists issue_transaction;
+drop table if exists receives_commission;
+drop table if exists purchase;
+drop table if exists rets;
+drop table if exists artists;
+drop table if exists supplies;
+drop table if exists sculpture;
+drop table if exists painting;
+drop table if exists art;
 
 create table clients
   (name varchar(30) not null,
     address varchar(30),
     email varchar(30),
-    phone number(38) not null,
+    phone varchar(10) not null,
     PRIMARY KEY (name, phone));
 
 create table issue_transaction
-  (transaction_id number(38) not null,
+  (transaction_id int(10) not null PRIMARY KEY, 
     name varchar(30) not null,
-    phone number(38) not null);
+    phone varchar(10) not null);
 
 create table art
-  (serial_number number(38) not null PRIMARY KEY,
+  (serial_number int(10) not null PRIMARY KEY,
     title varchar(38),
-    price number(38));
+    price int(10));
 
 create table sculpture
-  (serial_number number(38) not null PRIMARY KEY,
+  (serial_number int(10) not null PRIMARY KEY,
     material varchar(30),
     sculpture_style varchar(30),
-    foreign key (serial_number) references art);
+    foreign key (serial_number) references art(serial_number) ON DELETE CASCADE);
 
 create table painting
-  (serial_number number(38) not null PRIMARY KEY,
+  (serial_number int(10) not null PRIMARY KEY,
     medium varchar(30),
     painting_style varchar(30),
-    foreign key (serial_number) references art);
+    foreign key (serial_number) references art(serial_number) ON DELETE CASCADE);
 
 create table purchase
-  (transaction_id number(38) not null,
+  (transaction_id int(10) not null,
     purchase_date date,
-    receipt_id number(38),
+    receipt_id int(10),
     pur_type varchar(30),
-    id number(38),
-    amount number(38),
-    serial_number number(38) not null,
+    id int(10),
+    amount int(10),
+    serial_number int(10) not null,
     PRIMARY KEY (transaction_id, serial_number),
-    foreign key (transaction_id) references issue_transaction,
-    foreign key (serial_number) references art);
+    foreign key (transaction_id) references issue_transaction(transaction_id),
+    foreign key (serial_number) references art(serial_number));
 
-create table return
-  (transaction_id number(38) not null,
-    return_date date,
+create table rets
+  (transaction_id int(10) not null,
+    rets_date date,
     pur_type varchar(30),
-    id number(38),
-    amount number(38),
-    serial_number number(38) not null,
+    id int(10),
+    amount int(10),
+    serial_number int(10) not null,
     PRIMARY KEY (transaction_id, serial_number),
-    foreign key (transaction_id) references issue_transaction,
-    foreign key (serial_number) references art);
+    foreign key (transaction_id) references issue_transaction(transaction_id) ON DELETE cascade,
+    foreign key (serial_number) references art(serial_number) ON DELETE CASCADE);
 
 create table artists
   (name varchar(30) not null,
     studio_address varchar(30),
     email varchar(30),
-    phone number(38) not null,
+    phone varchar(10) not null,
     status varchar(30),
     PRIMARY KEY (name, phone));
 
 create table supplies
   (name varchar(30) not null,
-    phone number(38) not null,
-    commission_rate number(38),
-    serial_number number(38) not null,
+    phone varchar(10) not null,
+    commission_rate int(10),
+    serial_number int(10) not null,
     PRIMARY KEY (name, phone, serial_number),
-    foreign key (name, phone) references artists,
-    foreign key (serial_number) references art);
+    foreign key (name, phone) references artists(name, phone) ON DELETE CASCADE,
+    foreign key (serial_number) references art (serial_number) ON DELETE CASCADE);
 
 create table receives_commission
-  (transaction_id number(38) not null,
+  (transaction_id int(10) not null,
     name varchar(30) not null,
-    phone number(38) not null,
-    amount number(38),
+    phone varchar(10) not null,
+    amount int(10),
     PRIMARY KEY (transaction_id, name, phone),
-    foreign key (transaction_id) references transaction,
-    foreign key (name, phone) references artists);
+    foreign key (transaction_id) references transaction(transaction_id) ON DELETE CASCADE,
+    foreign key (name, phone) references artists(name, phone) ON DELETE CASCADE);
 
 insert into artists values
   ('Pablo Picasso', 'Paris, France', 'guernica37@spain.com', 5556925253, 'inactive');
@@ -155,21 +155,17 @@ insert into issue_transaction values
 
 insert into purchase values
     (54321, 20140531, 123, 'cash', null, 21000, 12349);
-insert into purchase values
-    (54323, 20140530, 124, 'mc', 3335 2324 1555 4555, 32000, 12345);   
-insert into purchase values
-    (54324, 20140531, 125, 'visa', 5665 5468 5648 6548, 80000, 12346);
-insert into return values
-    (54322, 20140602, 126, 'cash', null, 21000, 12349);
-insert into return values
-    (54325, 20140602, 127, 'mc', 3335 2324 1555 4555, 32000, 123445);
-
+-- insert into purchase values
+--     (54323, 20140530, 124, 'mc', 3335 2324 1555 4555, 32000, 12345);   
+-- insert into purchase values
+--     (54324, 20140531, 125, 'visa', 5665 5468 5648 6548, 80000, 12346);
+-- insert into rets values
+--     (54322, 20140602, 126, 'cash', null, 21000, 12349);
+-- insert into rets values
+--     (54325, 20140602, 127, 'mc', 3335 2324 1555 4555, 32000, 123445);
+-- 
 insert into receives_commission values
     (54324, 'Damien Hirst', 5556489895, 29000);
     
 
     
-
-
-
-
