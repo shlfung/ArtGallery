@@ -195,14 +195,19 @@ h1 {
 if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
 	?>
 	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
-		Search by phone number: <input type="text" name="faphone"> <br>
+		Search by <br>
+		First Name: <input type="text" name="fafname"> <br> 
+		Last Name: <input type="text" name="falname"> <br> 
+		Phone number: <input type="text" name="faphone"> <br>
 		<button name="fartistsql" type="submit" value="true">Search</button>
 	</form> 
 		<?php
 }
 
 if (isset($_POST['fartistsql'])){
-		$result = executePlainSQL($link,"SELECT * FROM artists WHERE phone='".$_POST['faphone']."'");
+		$result = executePlainSQL($link,"SELECT * FROM artists WHERE fname='".$_POST['fafname']."' 
+		AND lname='".$_POST['falname']."'
+		AND  phone='".$_POST['faphone']."'");
 		if (!$result) {
    		 die('Invalid query: ' . mysql_error());
 		}
@@ -211,12 +216,14 @@ if (isset($_POST['fartistsql'])){
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
+		<th>Phone Number</th>
 		</tr>";
 
 	while($row = mysqli_fetch_array($result)) {
   	echo "<tr>";
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
   	echo "</tr>";
 	}
 
