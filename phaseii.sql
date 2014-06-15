@@ -1,6 +1,7 @@
-DROP DATABASE ARTGALLERYDB;
+DROP DATABASE IF EXISTS ARTGALLERYDB ;
 CREATE DATABASE ARTGALLERYDB;
 USE ARTGALLERYDB;
+set Foreign_key_checks =0;
 
 
 create table clients
@@ -15,6 +16,7 @@ create table issue_transaction
     name varchar(30) not null,
     phone int not null);
 
+-- SHOULD WE HAVE A SOLD/AVAILABLE IDENTIFIER? the returns cross reference the art so it should still be present in db after purchase...
 create table art
   (serial_number int not null PRIMARY KEY,
     title varchar(38),
@@ -47,9 +49,9 @@ create table purchase
 create table purchase_return
   (transaction_id int not null,
     ret_date date,
-    pur_type varchar(30),
-    id int,
-    amount int,
+    pur_type varchar(30), -- is this the purchase type or the return type...? if its purchase type shouldn't it be a fkey?
+    id int, -- what is this id for?
+    amount int, -- shouldn't there be a constraint on this...? (so that it matches how much was charged)
     serial_number int not null,
     PRIMARY KEY (transaction_id, serial_number),
     foreign key (transaction_id) references issue_transaction (transaction_id) on delete cascade on update cascade,
@@ -150,16 +152,18 @@ insert into issue_transaction values
 insert into purchase values
     (54321, 20140531, 123, 'cash', null, 21000, 12349);
 insert into purchase values
-    (54323, 20140530, 124, 'mc', 3335 2324 1555 4555, 32000, 12345);   
+    (54323, 20140530, 124, 'mc', 33352324, 32000, 12345);   
 insert into purchase values
-    (54324, 20140531, 125, 'visa', 5665 5468 5648 6548, 80000, 12346);
-insert into return values
-    (54322, 20140602, 126, 'cash', null, 21000, 12349);
-insert into return values
-    (54325, 20140602, 127, 'mc', 3335 2324 1555 4555, 32000, 123445);
+    (54324, 20140531, 125, 'visa', 56655468, 80000, 12346);
+insert into purchase_return values
+    (54321, 54322, 'cash', 126, 21000, 12349);
+insert into purchase_return values
+    (54323, 54325, 'cash', 127, 32000, 12345);
 
 insert into receives_commission values
     (54324, 'Damien Hirst', 5556489895, 29000);
+
+set Foreign_key_checks =1;
     
 
     
