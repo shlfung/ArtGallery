@@ -20,9 +20,19 @@ function executePlainSQL($link, $cmdStr){
 <html>
 <head>
 	<title>Gallery DB</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+body {
+	background-color: #5984E8;
+}
+h1 {
+	font-size: 70;
+	color: #E3474A;
+}
+</style>
 </head>
 <body>
-	<h3>GalleryDB</h3>
+	<h1 align="center"> GalleryDB</h1>
 	<?php
 
 	// $link = '';
@@ -66,11 +76,11 @@ function executePlainSQL($link, $cmdStr){
     			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
 			}
 	?>
-	<form action="http://localhost/cs304/gallerydb.php" method="get">
+	<form align="center" action="http://localhost/cs304/gallerydb.php" method="get">
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
 	<button name="fartist" type="submit" value="true">Find Artist</button>
-	<button name="client" type="submit" value="true">Find Client</button>
+	<button name="fclient" type="submit" value="true">Find Client</button>
 	</form>
 
 
@@ -80,7 +90,7 @@ function executePlainSQL($link, $cmdStr){
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
 		?>
-		<form action='http://localhost/cs304/gallerydb.php' method='post'>
+		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 		First Name: <input type="text" name="afname"> 
 		Last Name: <input type="text" name="alname"> <br>
 		Street: <input type="text" name="astreet"> City:<input type="text" name="acity"><br>
@@ -132,7 +142,7 @@ function executePlainSQL($link, $cmdStr){
 
 	if (isset($_GET['aclient']) || isset($_POST['aclientsql'])){ //either the get flag is set or the client is being posted
 		?>
-		<form action='http://localhost/cs304/gallerydb.php' method='post'>
+		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 		First Name: <input type="text" name="cfname"> 
 		Last Name: <input type="text" name="clname"> <br>
 		Street: <input type="text" name="cstreet"> City:<input type="text" name="ccity"><br>
@@ -179,7 +189,81 @@ function executePlainSQL($link, $cmdStr){
 
 
 }
+
+
+	
+if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
+	?>
+	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+		Search by phone number: <input type="text" name="faphone"> <br>
+		<button name="fartistsql" type="submit" value="true">Search</button>
+	</form> 
+		<?php
+}
+
+if (isset($_POST['fartistsql'])){
+		$result = executePlainSQL($link,"SELECT * FROM artists WHERE phone='".$_POST['faphone']."'");
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		</tr>";
+
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+		
+}
+
+if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
+	?>
+	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+		Search by <br>
+		First Name: <input type="text" name="fcfname"> <br> 
+		Last Name: <input type="text" name="fclname"> <br> 
+		Phone number: <input type="text" name="fcphone"> <br>
+		<button name="fclientsql" type="submit" value="true">Search</button>
+	</form> 
+		<?php
+}
+
+if (isset($_POST['fclientsql'])){
+		$result = executePlainSQL($link,"SELECT * FROM clients WHERE fname='".$_POST['fcfname']."' AND lname='".$_POST['fclname']."'
+		AND  phone='".$_POST['fcphone']."'");
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		</tr>";
+
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+		
+}	
+
 ?>
 </form>
+
 </body>
 </html>
