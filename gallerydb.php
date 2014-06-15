@@ -81,12 +81,39 @@ h1 {
 	<button name="aclient" type="submit" value="true">Add Client</button>
 	<button name="fartist" type="submit" value="true">Find Artist</button>
 	<button name="fclient" type="submit" value="true">Find Client</button>
+	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
 	</form>
 
 
 	<?php
 
 	// adding an artist
+
+	if (isset($_GET['inventory'])){
+		$result = executePlainSQL($link, "SELECT s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		 								FROM supplies s, art a, sculpture sc
+		 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+		 								UNION
+		 								SELECT s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+		 								FROM supplies s, art a, painting p
+		 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
+		 								ORDER BY lname");
+		echo '<table>';
+		while ($row = mysqli_fetch_array($result)){
+			echo '<tr>';
+			echo '<td>'.$row['lname'].'</td>';
+			echo '<td>'.$row['fname'].'</td>';
+			echo '<td>'.$row['title'].'</td>';
+			if (isset($row['material'])){
+				echo '<td>'.$row['material'].'</td>';	
+			}else {
+				echo '<td>'.$row['medium'].'</td>';
+			}
+			echo '<td>'.$row['price'].'</td>';
+			echo '</tr>';
+		}
+		echo '</table>';
+	}
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
 		?>
@@ -203,10 +230,6 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
 
 if (isset($_POST['fartistsql'])){
 		$result = executePlainSQL($link,"SELECT * FROM artists WHERE phone='".$_POST['faphone']."'");
-		if (!$result) {
-   		 die('Invalid query: ' . mysql_error());
-		}
-
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
@@ -239,10 +262,6 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
 if (isset($_POST['fclientsql'])){
 		$result = executePlainSQL($link,"SELECT * FROM clients WHERE fname='".$_POST['fcfname']."' AND lname='".$_POST['fclname']."'
 		AND  phone='".$_POST['fcphone']."'");
-		if (!$result) {
-   		 die('Invalid query: ' . mysql_error());
-		}
-
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
