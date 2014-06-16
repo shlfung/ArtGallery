@@ -83,6 +83,8 @@ h1 {
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
+    <button name="trans" type="submit" value="true">Administer Transaction</button>
+
 	</form>
 
 
@@ -300,9 +302,81 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	echo "</form>" 	;
 
 }
+        
+if (isset($_GET['trans']) || isset($_POST['transsql'])){
+    ?>
+<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+Client:
+<select name="select_client">
+<?php
+	
+	$result = executePlainSQL($link,"SELECT * FROM clients");
+    while($row = mysqli_fetch_array($result)) {
+        $fname =  $row['fname'] ;
+        $lname =  $row['lname'] ;
+        echo "<option value=".$phone.">" .$fname. ' '
+        .$lname. 
+        "</option>";
+        
+    }
+    
+    ?>
+</select>
+<br>
+Art piece:
+<select name="select_art">
+<?php
+    
+    $result = executePlainSQL($link,"SELECT * FROM art");
+    while($row = mysqli_fetch_array($result)) {
+        $snum =  $row['serial_number'] ;
+        $title =  $row['title'] ;
+        $price = $row['price'];
+        echo "<option value=".$snum.">" .$title. ' '
+        .$snum. ' ' .$price.
+        "</option>";
+        
+    }
 ?>
+</select>
+</br>
 
-</form>
+<br>
+Selling Price:<input type="text" name="fcfname">
+Card type: <select name="ptype">
+    <option value="v">Visa</option>
+    <option value="mc">Master Card</option>
+    <option value="d">Debit</option>
+    <option value="c">Cash</option>
+    </select>
+
+</br>
+
+<br>
+<button name='transsql' type='submit' value='true'>Submit Transaction</button>
+</br></form>
+<?php
+}
+    
+    if (isset($_POST['transsql'])){
+		$query = "insert into artists values('"
+        .$_POST['afname']."','"
+        .$_POST['alname']."','"
+        .$_POST['astreet']."','"
+        .$_POST['acity']."','"
+        .$_POST['aprovince']."','"
+        .$_POST['apcode']."','"
+        .$_POST['acountry']."','"
+        .$_POST['aemail']."','"
+        .$_POST['aphone']."','"
+        .$_POST['astatus']."');";
+		$success = executePlainSQL($link, $query);
+		if ($success) {
+			echo "Statement: <br>".$query."<br>executed successfully.";
+		}
+	}
+
+?>
 
 
 </body>
