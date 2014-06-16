@@ -90,18 +90,30 @@ h1 {
 	// adding an artist
 
 	if (isset($_GET['inventory'])){
-		$result = executePlainSQL($link, "SELECT s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
-		 								FROM supplies s, art a, sculpture sc
+		$filter = executePlainSQL($link, "SELECT *
+		 								FROM artists");
+		$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		 								FROM supplies s, art a, sculpture sc, artists ar
 		 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 		 								UNION
-		 								SELECT s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
-		 								FROM supplies s, art a, painting p
+		 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+		 								FROM supplies s, art a, painting p, artists ar
 		 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
 		 								ORDER BY lname");
+		echo 'Filter by Artist:';
+		echo '<select name ="artist">';
+		while ($row = mysqli_fetch_array($filter)){
+			echo '<option value="'.$row['phone'].'">';
+			echo $row['lname'].', '.$row['fname'];
+			echo '</option>';
+			}
+		echo '</select>';
+		echo '<button name="invfbartist" value="true">Go</button>';
 		echo '<table>';
+
 		while ($row = mysqli_fetch_array($result)){
 			echo '<tr>';
-			echo '<td>'.$row['lname'].'</td>';
+			echo '<td>'.$row['lname'].',</td>';
 			echo '<td>'.$row['fname'].'</td>';
 			echo '<td>'.$row['title'].'</td>';
 			if (isset($row['material'])){
@@ -109,7 +121,7 @@ h1 {
 			}else {
 				echo '<td>'.$row['medium'].'</td>';
 			}
-			echo '<td>'.$row['price'].'</td>';
+			echo '<td>$'.$row['price'].'</td>';
 			echo '</tr>';
 		}
 		echo '</table>';
@@ -160,9 +172,11 @@ h1 {
 			.$_POST['aphone']."','"
 			.$_POST['astatus']."');";
 		$success = executePlainSQL($link, $query);
-		if ($success) {
+		if (is_string($success)) {
+			echo $success;
+		}else{
 			echo "Statement: <br>".$query."<br>executed successfully.";
-		}
+		}	
 	}
 
 	// adding a client
@@ -206,16 +220,19 @@ h1 {
 			.$_POST['cemail']."','"
 			.$_POST['cphone']."');";
 		$success = executePlainSQL($link, $query);
-		if ($success) {
+		if (is_string($success)) {
+			echo $success;
+		}else{
 			echo "Statement: <br>".$query."<br>executed successfully.";
 		}
 	}
+}
 
 	// finding an artist
 	// finding a client
 
 
-}
+
 
 
 	
