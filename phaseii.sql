@@ -1,7 +1,6 @@
-DROP DATABASE IF EXISTS ARTGALLERYDB ;
+DROP DATABASE GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
-set Foreign_key_checks =0;
 
 
 create table clients
@@ -13,7 +12,7 @@ create table clients
     country varchar(30),
     pcode varchar(30),
     email varchar(30),
-    phone int not null,
+    phone varchar(30)not null,
     PRIMARY KEY (fname, lname, phone));
 
 create table issue_transaction
@@ -71,14 +70,14 @@ create table artists
     pcode varchar(30),
     country varchar(30),
     email varchar(30),
-    phone int not null,
+    phone varchar(30)not null,
     status varchar(30),
     PRIMARY KEY (fname, lname, phone));
 
 create table supplies
   (fname varchar(30) not null,
    lname varchar(30) not null,
-    phone int not null,
+    phone varchar(30) not null,
     commission_rate decimal(65,2) unsigned,
     serial_number int not null,
     PRIMARY KEY (fname, lname, phone, serial_number),
@@ -89,7 +88,7 @@ create table receives_commission
   (transaction_id int not null,
     fname varchar(30) not null,
     lname varchar(30) not null,
-    phone int not null,
+    phone varchar(30) not null,
     amount decimal(65,2) unsigned,
     PRIMARY KEY (transaction_id, fname, lname, phone),
     foreign key (transaction_id) references issue_transaction (transaction_id) on delete cascade on update cascade,
@@ -163,14 +162,13 @@ insert into issue_transaction values
 insert into purchase values
     (54321, 20140531, 123, 'cash', null, 21000, 12349);
 insert into purchase values
-    (54323, 20140530, 124, 'mc', 33352324, 32000, 12345);   
+    (54323, 20140530, 124, 'mc', '3335 2324 1555 4555', 32000, 12345);
 insert into purchase values
-    (54324, 20140531, 125, 'visa', 56655468, 80000, 12346);
+    (54324, 20140531, 125, 'visa', '5665 5468 5648 6548', 80000, 12346);
 insert into purchase_return values
-    (54321, 54322, 'cash', 126, 21000, 12349);
+    (54321, 20140602, 'cash', null, 21000, 12349);
 insert into purchase_return values
-    (54323, 54325, 'cash', 127, 32000, 12345);
+    (54323, 20140602, 'mc', '3335 2324 1555 4555', 32000, 12345);
 
 insert into receives_commission values
     (54324, 'Damien', 'Hirst', 5556489895, 29000);
-set Foreign_key_checks =1;
