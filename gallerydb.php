@@ -29,6 +29,18 @@ h1 {
 	font-size: 70;
 	color: #E3474A;
 }
+
+table, td, th {
+    border: 3px solid black;
+}
+td {
+    background-color:  gray;
+    color: white ;
+}
+th {
+    background-color:  black;
+    color: red;
+}
 </style>
 <style>
 .error {color: #FF0000;}
@@ -129,7 +141,7 @@ h1 {
 		echo "<hr width=60% color=red>";
 		
 
-		echo "<table border='1' align=center>
+		echo "<table  align=center>
 		<tr>
 		<th>Lastname</th>
 		<th>Firstname</th>
@@ -314,7 +326,7 @@ if (isset($_POST['fartistsql'])){
 			echo "<p align=center>No results found!</p>";
 		}
 		else{
-		echo "<table border='1' align=center>
+		echo "<table align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
