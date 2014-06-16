@@ -23,7 +23,7 @@ function executePlainSQL($link, $cmdStr){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 body {
-	background-color: #5984E8;
+	background-color: #98B2FA;
 }
 h1 {
 	font-size: 70;
@@ -159,21 +159,28 @@ h1 {
 
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
-		// define variables and set to empty values
-	$nameErr="";
+		
+// define variables and set to empty values
+$fnameErr = $lnameErr =$emailErr = $phoneErr= "";
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  		$fnameErr=validate_name($_POST["afname"]);
+  		$lnameErr=validate_name($_POST["alname"]);
+  		$phoneErr=validate_number($_POST["aphone"]);
+  		$emailErr=validate_email($_POST["aemail"]);
+  }		
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Artist</h2>
 		<p><span class="error">* required field.</span></p>
-		First Name: <input type="text" name="afname"> <span class="error">*</span> <br>
-		Last Name: <input type="text" name="alname"> <span class="error">*</span><br>
+		First Name: <input type="text" name="afname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
+		Last Name: <input type="text" name="alname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="astreet"> <br>
 		City:<input type="text" name="acity"><br>
 		State/Province: <input type="text" name="aprovince"><br>
 		Postal Code: <input type="text" name="apcode"><br>
 		Country: <input type="text" name="acountry"><br>
-		Email: <input type="text" name="aemail"><br>
-		Phone: <input type="text" name="aphone"><span class="error">*</span><br>
+		Email: <input type="text" name="aemail"><span class="error"><?php echo "$emailErr";?></span><br></span><br>
+		Phone: <input type="text" name="aphone"><span class="error">*<?php echo "$phoneErr";?></span><br></span><br>
 		Status: <select name="astatus">
 					<option value="inactive">Inactive</option>
 					<option value="active">Active</option>
@@ -188,9 +195,8 @@ h1 {
 	
 
 	if (isset($_POST['aartistsql'])){
-		validate_name($_POST["afname"]);
-		if (empty($_POST["afname"]) or empty($_POST["alname"]) or empty($_POST["aphone"]) ) {
-    		echo "<p style='color:yellow' align=center>  One or more of the required fields is/are empty!  </p> <br><br>" ;
+		if (!empty($fnameErr) or !empty($lnameErr) or !empty($phoneErr) or !empty($emailErr)) {
+    		echo "<p align=center size:large>Artist was not added!</p>";
   		}else{
 		$query = "insert into artists values('"
 			.test_input($_POST['afname'])."','"
@@ -215,27 +221,36 @@ h1 {
 	// adding a client
 
 	if (isset($_GET['aclient']) || isset($_POST['aclientsql'])){ //either the get flag is set or the client is being posted
+		// define variables and set to empty values
+	$fnameErr = $lnameErr =$emailErr = $phoneErr= "";
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  		$fnameErr=validate_name($_POST["cfname"]);
+  		$lnameErr=validate_name($_POST["clname"]);
+  		$phoneErr=validate_number($_POST["cphone"]);
+  		$emailErr=validate_email($_POST["cemail"]);
+  }		
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Client</h2>
 		<p><span class="error">* required field.</span></p>
-		First Name: <input type="text" name="cfname"> <span class="error">*</span> <br>
-		Last Name: <input type="text" name="clname"> <span class="error">*</span><br>
+		First Name: <input type="text" name="cfname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
+		Last Name: <input type="text" name="clname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="cstreet"><br>
 		City:<input type="text" name="ccity"><br>
 		State/Province: <input type="text" name="cprovince"><br>
 		Country: <input type="text" name="ccountry"><br>
 		Postal Code: <input type="text" name="cpcode"><br>
-		Email: <input type="text" name="cemail"><br>
-		Phone: <input type="text" name="cphone"><span class="error">*</span><br>
+		Email: <input type="text" name="cemail"><span class="error">*<?php echo "$emailErr";?></span><br>
+		Phone: <input type="text" name="cphone"><span class="error">*<?php echo "$phoneErr";?></span><br>
 		<button name="aclientsql" type="submit" value="true">Add</button>
 		</form>
 			<?php
 	}
 
 	if (isset($_POST['aclientsql'])){
-		if (empty($_POST["cfname"]) or empty($_POST["clname"]) or empty($_POST["cphone"]) ) {
-    		echo "<p style='color:yellow' align=center>  One or more of the required fields is/are empty!  </p> <br><br>" ;
+		echo $fnameErr . $lnameErr . $phoneErr . $emailErr;
+		if (!empty($fnameErr) or !empty($lnameErr) or !empty($phoneErr) or !empty($emailErr)) {
+    		echo "<p align=center size:large>Client was not added!</p>";
   		}else{
 		$query = "insert into clients values('"
 			.test_input($_POST['cfname'])."','"
@@ -294,14 +309,18 @@ if (isset($_POST['fartistsql'])){
 		if (!$result) {
    		 die('Invalid query: ' . mysql_error());
 		}
-
+		
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
 		</tr>";
-
+		}
 	while($row = mysqli_fetch_array($result)) {
   	echo "<tr>";
   	echo "<td>" . $row['fname'] . "</td>";
@@ -324,14 +343,17 @@ if (isset($_POST['fallartistsql'])){
 		if (!$result) {
    		 die('Invalid query: ' . mysql_error());
 		}
-
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
 		</tr>";
-
+		}
 	while($row = mysqli_fetch_array($result)) {
   	echo "<tr>";
   	echo "<td>" . $row['fname'] . "</td>";
@@ -377,13 +399,17 @@ if (isset($_POST['fclientsql'])){
    		 die('Invalid query: ' . mysql_error());
 		}
 
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
 		</tr>";
-
+		}
 	while($row = mysqli_fetch_array($result)) {
   	echo "<tr>";
   	echo "<td>" . $row['fname'] . "</td>";
@@ -406,13 +432,17 @@ if (isset($_POST['fallclientsql'])){
    		 die('Invalid query: ' . mysql_error());
 		}
 
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
 		</tr>";
-
+		}
 	while($row = mysqli_fetch_array($result)) {
   	echo "<tr>";
   	echo "<td>" . $row['fname'] . "</td>";
@@ -494,14 +524,26 @@ function test_input($data) {
 }
 
 function validate_name($data){
-	if (!preg_match("/^[a-zA-Z ]*$/",$data)) {
-  echo "<script type='text/javascript'>alert('Only letters and white space allowed!'');</script>"; 
+	if(empty($data)){
+		return "Field is empty!";
+	}elseif (!preg_match("/^[a-zA-Z ]*$/",$data)) {
+		return "Only letters and white space allowed!";
 	}
 }
 
 function validate_number($data){
-	if (!preg_match("/^[a-zA-Z ]*$/",$data)) {
-  echo "<script type='text/javascript'>alert('Only letters and white space allowed!'');</script>"; 
+	if(empty($data)){
+		return "Field is empty!";
+	}elseif(!is_numeric($data)) {
+		return "Phone number consists of non-numerical values!";
+	
+	}
+}
+
+function validate_email($data){
+	if(!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/",$data)) {
+		return "Invalid email format!";
+	
 	}
 }
 ?>
