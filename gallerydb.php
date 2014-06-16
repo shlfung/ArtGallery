@@ -206,13 +206,12 @@ h1 {
 	}
 }
 
-	// finding an artist
-	// finding a client
+	
 
 
 
 
-
+// finding an artist
 	
 if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
 	?>
@@ -253,6 +252,8 @@ if (isset($_POST['fartistsql'])){
 		
 }
 
+//finding a client
+
 if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
 	?>
 	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
@@ -261,6 +262,10 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
 		Last Name: <input type="text" name="fclname"> <br> 
 		Phone number: <input type="text" name="fcphone"> <br>
 		<button name="fclientsql" type="submit" value="true">Search</button>
+		<hr>
+		Search All Clients by City: <br>
+		City: <input type="text" name="fccity"> <br> 
+		<button name="fallclientsql" type="submit" value="true">Find All Clients</button>
 	</form> 
 		<?php
 }
@@ -290,7 +295,34 @@ if (isset($_POST['fclientsql'])){
 
 	echo "</table>";
 		
+}
+
+if (isset($_POST['fallclientsql'])){
+		$result = executePlainSQL($link,"SELECT * FROM clients WHERE city='".$_POST['fccity']."'");
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		</tr>";
+
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+		
 }	
+
+// delete an artist
 
 if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 	?>
@@ -317,6 +349,8 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 	echo "</form>" 	;
 
 }
+
+//delete a client
 
 if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	?>
