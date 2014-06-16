@@ -91,19 +91,53 @@ h1 {
 
 	// adding an artist
 
-	if (isset($_GET['inventory'])){
+	if (isset($_GET['inventory']) or isset($_GET['invfbartist']) or isset($_GET['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
-		$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
-		 								FROM supplies s, art a, sculpture sc, artists ar
-		 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
-		 								UNION
-		 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
-		 								FROM supplies s, art a, painting p, artists ar
-		 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
-		 								ORDER BY lname");
+		if (isset($_GET['invfbartist'])){
+			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			 								FROM supplies s, art a, sculpture sc, artists ar
+			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								UNION
+			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								FROM supplies s, art a, painting p, artists ar
+			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								ORDER BY lname");			
+		}
+		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'gthan'){
+			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			 								FROM supplies s, art a, sculpture sc, artists ar
+			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								UNION
+			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								FROM supplies s, art a, painting p, artists ar
+			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								ORDER BY lname");			
+		}
+		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'lthan'){
+			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			 								FROM supplies s, art a, sculpture sc, artists ar
+			 								WHERE a.price > ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								UNION
+			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								FROM supplies s, art a, painting p, artists ar
+			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								ORDER BY lname");			
+		}
+		else {
+			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			 								FROM supplies s, art a, sculpture sc, artists ar
+			 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								UNION
+			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								FROM supplies s, art a, painting p, artists ar
+			 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								ORDER BY lname");
+		}
+		echo "<form action='http://localhost/cs304/gallerydb.php' method='get'>";
 		echo 'Filter by Artist:';
 		echo '<select name ="artist">';
+		echo '<option selected value=""></option>';
 		while ($row = mysqli_fetch_array($filter)){
 			echo '<option value="'.$row['phone'].'">';
 			echo $row['lname'].', '.$row['fname'];
@@ -114,12 +148,13 @@ h1 {
 
 		echo 'Filter by price:';
 		echo '<select name ="gthan">';
-		echo '<option value="true">greater than</option>';
-		echo '<option value="false">less than</option>';
+		echo '<option selected value=""></option>';
+		echo '<option value="gthan">greater than</option>';
+		echo '<option value="lthan">less than</option>';
 		echo '</select>';
 		echo '$<input type="text" name="value">';
-		echo '<button name="invfbartist" value="true">Go</button><br>';
-
+		echo '<button name="invfbvalue" value="true">Go</button><br>';
+		echo '</form>';
 		
 
 		echo '<table>';
