@@ -83,6 +83,7 @@ h1 {
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
+	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
 	</form>
 
 
@@ -109,7 +110,18 @@ h1 {
 			echo '</option>';
 			}
 		echo '</select>';
-		echo '<button name="invfbartist" value="true">Go</button>';
+		echo '<button name="invfbartist" value="true">Go</button><br>';
+
+		echo 'Filter by price:';
+		echo '<select name ="gthan">';
+		echo '<option value="true">greater than</option>';
+		echo '<option value="false">less than</option>';
+		echo '</select>';
+		echo '$<input type="text" name="value">';
+		echo '<button name="invfbartist" value="true">Go</button><br>';
+
+		
+
 		echo '<table>';
 
 		while ($row = mysqli_fetch_array($result)){
