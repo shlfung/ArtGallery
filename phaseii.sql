@@ -1,6 +1,7 @@
-DROP DATABASE GALLERYDB;
+DROP DATABASE IF EXISTS ARTGALLERYDB ;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
+set Foreign_key_checks =0;
 
 
 create table clients
@@ -162,13 +163,14 @@ insert into issue_transaction values
 insert into purchase values
     (54321, 20140531, 123, 'cash', null, 21000, 12349);
 insert into purchase values
-    (54323, 20140530, 124, 'mc', '3335 2324 1555 4555', 32000, 12345);
+    (54323, 20140530, 124, 'mc', 33352324, 32000, 12345);   
 insert into purchase values
-    (54324, 20140531, 125, 'visa', '5665 5468 5648 6548', 80000, 12346);
+    (54324, 20140531, 125, 'visa', 56655468, 80000, 12346);
 insert into purchase_return values
-    (54321, 20140602, 'cash', null, 21000, 12349);
+    (54321, 54322, 'cash', 126, 21000, 12349);
 insert into purchase_return values
-    (54323, 20140602, 'mc', '3335 2324 1555 4555', 32000, 12345);
+    (54323, 54325, 'cash', 127, 32000, 12345);
 
 insert into receives_commission values
     (54324, 'Damien', 'Hirst', 5556489895, 29000);
+set Foreign_key_checks =1;
