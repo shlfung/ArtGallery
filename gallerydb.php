@@ -94,6 +94,7 @@ th {
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
+    <button name="apainting" type="submit" value="true">Add Painting</button>
 	<button name="fartist" type="submit" value="true">Find Artist</button>
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
@@ -229,6 +230,52 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		}
 		}	
 	}
+
+    // adding a painting
+
+    if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
+     ?>
+     <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
+         Title: <input type="text" name="ptitle">
+         Price: <input type="text" name="pprice"> <br>
+         Medium: <input type="text" name="pmedium">
+         Style: <input type="text" name="pstyle"> 
+         Image Link: <input type="text" name="purl"> <br>
+         <button name="apaintingsql" type="submit" value="true">Add</button>
+     </form>
+      <?php
+    }
+
+    if (isset($_POST['apaintingsql'])) {
+     // Find the largest serial number and add 1 to be the new serial number
+     $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A
+                                          WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
+
+     // Grab and Generate the new SQL Integer from the SQL Statement
+     while($row = mysqli_fetch_array($result)) {
+         echo $row['serial_number'];
+         $newSerial = $row['serial_number'];
+         echo "<br>";
+     }
+     $newSerial++;
+     echo $newSerial;
+     echo "<br>";
+
+     $query="INSERT INTO art VALUES ($newSerial,'"
+     .$_POST['ptitle']."','"
+     .$_POST['pprice']."','"
+     .$_POST['purl']."');";
+     $query2="INSERT INTO painting VALUES($newSerial,'"
+     .$_POST['pmedium']."','"
+     .$_POST['pstyle']."');";
+ 
+     $success =  executePlainSQL($link, $query);
+     $success2 = executePlainSQL($link, $query2);
+     if ($success and $success2) {
+         echo "Statement: <br>".$query."<br>Executed successfully.";
+         echo "Statement: <br>".$query2."<br>Executed successfully.";        
+     }
+    }
 
 	// adding a client
 
