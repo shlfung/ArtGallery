@@ -1,4 +1,3 @@
-DROP DATABASE GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
 
@@ -24,7 +23,8 @@ create table issue_transaction
 create table art
   (serial_number int not null PRIMARY KEY,
     title varchar(38),
-    price decimal(65,2) unsigned not null);
+    price decimal(65,2) unsigned not null,
+    pic_url text);
 
 create table sculpture
   (serial_number int not null PRIMARY KEY,
@@ -72,6 +72,7 @@ create table artists
     email varchar(30),
     phone varchar(30)not null,
     status varchar(30),
+    pic_url text,
     PRIMARY KEY (fname, lname, phone));
 
 create table supplies
@@ -95,34 +96,34 @@ create table receives_commission
     foreign key (fname, lname, phone) references artists (fname, lname, phone) on delete cascade on update cascade);
 
 insert into artists values
-  ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
+  ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive', 'http://upload.wikimedia.org/wikipedia/en/4/41/Portrait_of_Pablo_Picasso%2C_1908-1909%2C_anonymous_photographer%2C_Mus%C3%A9e_Picasso%2C_Paris...jpg');
 insert into artists values
-  ('Henri', 'Mattisse', 'Place Henri Mattise', 'Paris', 'Ile-de-France', 'France', '75020', 'riteofspring@nice.com', 5552565223, 'inactive');
+  ('Henri', 'Mattisse', 'Place Henri Mattise', 'Paris', 'Ile-de-France', 'France', '75020', 'riteofspring@nice.com', 5552565223, 'inactive', 'http://upload.wikimedia.org/wikipedia/commons/b/b1/Portrait_of_Henri_Matisse_1933_May_20.jpg');
 insert into artists values
-  ('Claude', 'Monet', 'Lycee General Claude Monet', 'Paris', 'Ile-de-France', 'France', '75013', 'waterlily@pondlife.com', 5556124553, 'inactive');
+  ('Claude', 'Monet', 'Lycee General Claude Monet', 'Paris', 'Ile-de-France', 'France', '75013', 'waterlily@pondlife.com', 5556124553, 'inactive', 'http://upload.wikimedia.org/wikipedia/commons/a/a4/Claude_Monet_1899_Nadar_crop.jpg');
 insert into artists values
-  ('Weiwei', 'Ai', 'Caochangdi', 'Beijing', 'Beijing', 'China', '75432', 'notsorry@caochagdi.com', 5554656253, 'active');
+  ('Weiwei', 'Ai', 'Caochangdi', 'Beijing', 'Beijing', 'China', '75432', 'notsorry@caochagdi.com', 5554656253, 'active', 'http://upload.wikimedia.org/wikipedia/commons/4/46/Ai_weiwei-.jpg');
 insert into artists values
-  ('Damien', 'Hirst', '42 New Compton St', 'London', 'London', 'United Kingdom', 'WC2H 8DA', 'sharklover@yba.com', 5556489895, 'active');
+  ('Damien', 'Hirst', '42 New Compton St', 'London', 'London', 'United Kingdom', 'WC2H 8DA', 'sharklover@yba.com', 5556489895, 'active', 'http://upload.wikimedia.org/wikipedia/commons/4/4d/The_Future_of_Art_-_Damien_Hirst.jpg');
 
 insert into art values
-    (12345, 'Dora Mar', 32000);
+    (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg');
 insert into painting values
     (12345, 'Oil on Canvas', 'Western');
 insert into art values
-    (12346, 'For The Love of God', 58000);
+    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg');
 insert into sculpture values
     (12346, 'Platinum and Diamonds', 'Modern');
 insert into art values
-    (12347, 'Han Dynasty Vase', 45000);
+    (12347, 'Han Dynasty Vase', 45000, 'http://www.phaidon.com/resource/ins-absent-2.jpg');
 insert into sculpture values
     (12347, 'Han Dynasty Vase, paint', 'Asian');
 insert into art values
-    (12348, 'Water Lilies', 92000);
+    (12348, 'Water Lilies', 92000, 'http://upload.wikimedia.org/wikipedia/commons/2/2a/Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg');
 insert into painting values
     (12348, 'Oil on Canvas', 'Western');
 insert into art values
-    (12349, 'The Dance', 22000);
+    (12349, 'The Dance', 22000, 'http://upload.wikimedia.org/wikipedia/en/2/2e/La_danse_%28I%29_by_Matisse.jpg');
 insert into painting values
     (12349, 'Oil on Canvas', 'Western');
 
