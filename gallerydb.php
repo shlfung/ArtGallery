@@ -32,7 +32,7 @@ h1 {
 </style>
 </head>
 <body>
-	<h1 align="center"> GalleryDB</h1>
+	<h1 align="center"> <a href="http://localhost/cs304/gallerydb.php"> GalleryDB </a></h1>
 	<?php
 
 	// $link = '';
@@ -80,8 +80,9 @@ h1 {
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
 	<button name="fartist" type="submit" value="true">Find Artist</button>
-	<button name="fclient" type="submit" value="true">Find Client</button>
-	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+	<button name="fclient" type="submit" value="true">Find Client</button> <br>
+	<button name="dartist" type="submit" value="true">Delete Artist</button>
+	<button name="dclient" type="submit" value="true">Delete Client</button>
 	</form>
 
 
@@ -133,22 +134,9 @@ h1 {
 		First Name: <input type="text" name="afname"> 
 		Last Name: <input type="text" name="alname"> <br>
 		Street: <input type="text" name="astreet"> City:<input type="text" name="acity"><br>
-		Province: <select name="aprovince">
-					<option value="AB">Alberta</option>
-					<option value="BC">British Columbia</option>
-					<option value="MB">Manitoba</option>
-					<option value="NB">New Brunswick</option>
-					<option value="NL">Newfoundland and Labrador</option>
-					<option value="NS">Nova Scotia</option>
-					<option value="ON">Ontario</option>
-					<option value="PE">Prince Edward Island</option>
-					<option value="QC">Quebec</option>
-					<option value="SK">Saskatchewan</option>
-					<option value="NT">Northwest Territories</option>
-					<option value="NU">Nunavut</option>
-					<option value="YT">Yukon</option>
-				</select> 
+		State/Province: <input type="text" name="aprovince"><br>
 		Postal Code: <input type="text" name="apcode"><br>
+		Country: <input type="text" name="acountry"><br>
 		Email: <input type="text" name="aemail"><br>
 		Phone: <input type="text" name="aphone"><br>
 		Status: <select name="astatus">
@@ -168,6 +156,7 @@ h1 {
 			.$_POST['acity']."','"
 			.$_POST['aprovince']."','"
 			.$_POST['apcode']."','"
+			.$_POST['acountry']."','"
 			.$_POST['aemail']."','"
 			.$_POST['aphone']."','"
 			.$_POST['astatus']."');";
@@ -187,21 +176,9 @@ h1 {
 		First Name: <input type="text" name="cfname"> 
 		Last Name: <input type="text" name="clname"> <br>
 		Street: <input type="text" name="cstreet"> City:<input type="text" name="ccity"><br>
-		Province: <select name="cprovince">
-					<option value="AB">Alberta</option>
-					<option value="BC">British Columbia</option>
-					<option value="MB">Manitoba</option>
-					<option value="NB">New Brunswick</option>
-					<option value="NL">Newfoundland and Labrador</option>
-					<option value="NS">Nova Scotia</option>
-					<option value="ON">Ontario</option>
-					<option value="PE">Prince Edward Island</option>
-					<option value="QC">Quebec</option>
-					<option value="SK">Saskatchewan</option>
-					<option value="NT">Northwest Territories</option>
-					<option value="NU">Nunavut</option>
-					<option value="YT">Yukon</option>
-				</select>  Postal Code: <input type="text" name="cpcode"><br>
+		State/Province: <input type="text" name="cprovince"><br>
+		Country: <input type="text" name="ccountry"><br>
+		Postal Code: <input type="text" name="cpcode"><br>
 		Email: <input type="text" name="cemail"><br>
 		Phone: <input type="text" name="cphone"><br>
 		<button name="aclientsql" type="submit" value="true">Add</button>
@@ -216,6 +193,7 @@ h1 {
 			.$_POST['cstreet']."','"
 			.$_POST['ccity']."','"
 			.$_POST['cprovince']."','"
+			.$_POST['ccountry']."','"
 			.$_POST['cpcode']."','"
 			.$_POST['cemail']."','"
 			.$_POST['cphone']."');";
@@ -249,7 +227,13 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
 }
 
 if (isset($_POST['fartistsql'])){
-		$result = executePlainSQL($link,"SELECT * FROM artists WHERE phone='".$_POST['faphone']."'");
+		$result = executePlainSQL($link,"SELECT * FROM artists WHERE fname='".$_POST['fafname']."' 
+		AND lname='".$_POST['falname']."'
+		AND  phone='".$_POST['faphone']."'");
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
@@ -282,8 +266,13 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
 }
 
 if (isset($_POST['fclientsql'])){
-		$result = executePlainSQL($link,"SELECT * FROM clients WHERE fname='".$_POST['fcfname']."' AND lname='".$_POST['fclname']."'
+		$result = executePlainSQL($link,"SELECT * FROM clients WHERE fname='".$_POST['fcfname']."' 
+		AND lname='".$_POST['fclname']."'
 		AND  phone='".$_POST['fcphone']."'");
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
 		echo "<table border='1' align=center>
 		<tr>
 		<th>Firstname</th>
@@ -303,8 +292,61 @@ if (isset($_POST['fclientsql'])){
 		
 }	
 
+if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
+	?>
+	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+		Choose Artist:
+		<select name="select_artist">
+	<?php
+	if (isset($_POST['dartistsql'])){
+		$delete = executePlainSQL($link,"DELETE  FROM artists WHERE  phone = '".$_POST['select_artist']."'");
+	}	
+	$result = executePlainSQL($link,"SELECT * FROM artists");
+		while($row = mysqli_fetch_array($result)) {
+			$fname =  $row['fname'] ;
+			$lname =  $row['lname'] ;
+			$phone =  $row['phone'] ;
+			echo "<option value=".$phone.">" .$fname. ','
+									 .$lname. ','
+									 .$phone. 
+							"</option>";
+
+		}
+	echo "</select> ";
+	echo "<button name='dartistsql' type='submit' value='true'>Delete</button>";
+	echo "</form>" 	;
+
+}
+
+if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
+	?>
+	<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+		Choose client:
+		<select name="select_client">
+	<?php
+	if (isset($_POST['dclientsql'])){
+		$delete = executePlainSQL($link,"DELETE  FROM clients WHERE  phone = '".$_POST['select_client']."'");
+	}	
+	$result = executePlainSQL($link,"SELECT * FROM clients");
+		while($row = mysqli_fetch_array($result)) {
+			$fname =  $row['fname'] ;
+			$lname =  $row['lname'] ;
+			$phone =  $row['phone'] ;
+			echo "<option value=".$phone.">" .$fname. ','
+									 .$lname. ','
+									 .$phone. 
+							"</option>";
+
+		}
+	echo "</select> ";
+	echo "<button name='dclientsql' type='submit' value='true'>Delete</button>";
+	echo "</form>" 	;
+
+}
 ?>
+
 </form>
+
 
 </body>
 </html>
