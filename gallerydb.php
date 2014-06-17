@@ -305,21 +305,42 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle"> <br>
+         Title: <input type="text" name="ptitle">
          Price: <input type="text" name="pprice"> <br>
-         Medium: <input type="text" name="pmedium"> <br>
-         Style: <input type="text" name="pstyle"> <br>
+         Medium: <input type="text" name="pmedium">
+         Style: <input type="text" name="pstyle"> 
          Image Link: <input type="text" name="purl"> <br>
-         <button name="apaintingsql" type="submit" value="true">Add Painting</button>
+         Comission Rate: <input type='number' name='pcommission'>
+         Choose Artist: <select name="select_artist">
+    <?php
+      
+    //Generating Artist Selection    	
+	$theArtist = executePlainSQL($link,"SELECT * FROM artists");
+		while($row = mysqli_fetch_array($theArtist)) {
+			$fname =  $row['fname'] ;
+			$lname =  $row['lname'] ;
+			$phone =  $row['phone'] ;
+			echo "<option value=".$phone.">" .$fname. ','
+									 .$lname. ','
+									 .$phone. 
+							"</option>";
+		}
+	echo "</select> ";
+    ?>
+
+     <button name='apaintingsql' type='submit' value='true'>Add</button>
      </form>
-      <?php
+
+    <?php
     }
 
     if (isset($_POST['apaintingsql'])) {
-     // Find the largest serial number and add 1 to be the new serial number
-     $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A
-                                          WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
 
+     //$result = executePlainSQL($link, "SELECT A.serial_number FROM Art A WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
+     
+     // Find the largest serial number and add 1 to be the new serial number
+     $result = executePlainSQL($link, "SELECT MAX(A.serial_number) FROM Art A");
+     
      // Grab and Generate the new SQL Integer from the SQL Statement
      while($row = mysqli_fetch_array($result)) {
          echo $row['serial_number'];
@@ -344,6 +365,31 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
          echo "Statement: <br>".$query."<br>Executed successfully.";
          echo "Statement: <br>".$query2."<br>Executed successfully.";        
      }
+
+     // Insert the Art and Artist to the Supplies Table
+     $artistInfo = executePlainSQL($link,"SELECT * FROM artists WHERE phone = '".$_POST['select_artist']."'");
+      while($row=mysqli_fetch_array($artistInfo)) {
+
+            $artistFname = $row['fname'];
+            $artistLname = $row['lname'];
+            $artistPhone = $row['phone'];   
+        }
+      
+      echo "<br>";
+      echo $artistFname;
+      echo $artistLname;
+      echo $artistPhone;
+      echo $newSerial;
+
+      $commission = $_POST['pcommission'];
+
+      $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
+
+      $success3 = executePlainSQL($link, $query3);
+      if ($success3) {
+          echo "<br>";
+          echo "Statement: <br>".$query3."<br>Executed successfully.";  
+      }
     }
 
 	// adding a client
