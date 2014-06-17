@@ -100,6 +100,8 @@ th {
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
 	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+    <button name="trans" type="submit" value="true">Administer Transaction</button>
+    <div name="transphp"><br></br><?php include 'trans.php';?></div>
 	</form>
 
 
