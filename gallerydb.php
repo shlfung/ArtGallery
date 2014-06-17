@@ -29,6 +29,37 @@ h1 {
 	font-size: 70;
 	color: #E3474A;
 }
+button {
+   border-top: 1px solid #1a1616;
+   background: #292129;
+   background: -webkit-gradient(linear, left top, left bottom, from(#5c5e87), to(#292129));
+   background: -webkit-linear-gradient(top, #5c5e87, #292129);
+   background: -moz-linear-gradient(top, #5c5e87, #292129);
+   background: -ms-linear-gradient(top, #5c5e87, #292129);
+   background: -o-linear-gradient(top, #5c5e87, #292129);
+   padding: 5px 10px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: Georgia, serif;
+   text-decoration: none;
+   vertical-align: middle;
+   }
+button:hover {
+   border-top-color: #4b5257;
+   background: #4b5257;
+   color: #ccc;
+   }
+button:active {
+   border-top-color: #000000;
+   background: #000000;
+   }
 
 table, td, th {
     border: 3px solid black;
@@ -99,9 +130,8 @@ th {
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
-	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
-    <button name="trans" type="submit" value="true">Administer Transaction</button>
-    <div name="transphp"><br></br><?php include 'trans.php';?></div>
+	<button name="inventory" type="submit" value="true">Gallery Inventory</button><br>
+	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
 	</form>
 
 
@@ -228,13 +258,13 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		State/Province: <input type="text" name="aprovince"><br>
 		Postal Code: <input type="text" name="apcode"><br>
 		Country: <input type="text" name="acountry"><br>
-		Email: <input type="text" name="aemail"><span class="error"><?php echo "$emailErr";?></span><br></span><br>
-		Phone: <input type="text" name="aphone"><span class="error">*<?php echo "$phoneErr";?></span><br></span><br>
+		Email: <input type="text" name="aemail"><span class="error"><?php echo "$emailErr";?></span><br>
+		Phone: <input type="text" name="aphone"><span class="error">*<?php echo "$phoneErr";?></span><br>
 		Status: <select name="astatus">
 					<option value="inactive">Inactive</option>
 					<option value="active">Active</option>
 				</select><br>
-		<button name="aartistsql" type="submit" value="true">Add</button>
+		<button name="aartistsql" type="submit" value="true">Add Artist</button>
 		</form>
 		<?php
 		
@@ -272,12 +302,12 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle">
+         Title: <input type="text" name="ptitle"> <br>
          Price: <input type="text" name="pprice"> <br>
-         Medium: <input type="text" name="pmedium">
-         Style: <input type="text" name="pstyle"> 
+         Medium: <input type="text" name="pmedium"> <br>
+         Style: <input type="text" name="pstyle"> <br>
          Image Link: <input type="text" name="purl"> <br>
-         <button name="apaintingsql" type="submit" value="true">Add</button>
+         <button name="apaintingsql" type="submit" value="true">Add Painting</button>
      </form>
       <?php
     }
@@ -337,7 +367,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		Postal Code: <input type="text" name="cpcode"><br>
 		Email: <input type="text" name="cemail"><span class="error">*<?php echo "$emailErr";?></span><br>
 		Phone: <input type="text" name="cphone"><span class="error">*<?php echo "$phoneErr";?></span><br>
-		<button name="aclientsql" type="submit" value="true">Add</button>
+		<button name="aclientsql" type="submit" value="true">Add Client</button>
 		</form>
 			<?php
 	}
@@ -409,6 +439,7 @@ if (isset($_POST['fartistsql'])){
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
+		<th>Status</th>
 		</tr>";
 		}
 	while($row = mysqli_fetch_array($result)) {
@@ -416,6 +447,7 @@ if (isset($_POST['fartistsql'])){
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
   	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['status'] . "</td>";
   	echo "</tr>";
 	}
 
@@ -442,6 +474,7 @@ if (isset($_POST['fallartistsql'])){
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
+		<th>Status</th>
 		</tr>";
 		}
 	while($row = mysqli_fetch_array($result)) {
@@ -449,6 +482,7 @@ if (isset($_POST['fallartistsql'])){
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
   	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['status'] . "</td>";
   	echo "</tr>";
 	}
 
@@ -602,6 +636,52 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	echo "</form>" 	;
 
 }
+
+if (isset($_GET['popular_artists'])){
+	?>
+	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
+		<h3 >Artists who have sold all their artwork</h3>
+	</form>
+	<?php
+	$popular_artists = executePlainSQL($link,"SELECT * 
+											  FROM artists a , supplies s1 
+											  WHERE a.fname=s1.fname AND a.lname=s1.lname AND a.phone=s1.phone AND s1.serial_number IS NOT NULL
+											  AND not exists 
+											  (SELECT s2.serial_number 
+											  FROM supplies s2 
+											  WHERE a.fname=s2.fname AND a.lname=s2.lname AND a.phone=s2.phone 
+											  AND not exists
+											  (SELECT transaction_id 
+											  FROM purchase p 
+											  WHERE p.serial_number=s2.serial_number));");
+    if (!$popular_artists) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
+		if (mysqli_num_rows($popular_artists) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		</tr>";
+		}
+	while($row = mysqli_fetch_array($popular_artists)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+	
+}
+
+
 ?>
 
 </form>
