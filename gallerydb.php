@@ -78,7 +78,9 @@ function executePlainSQL($link, $cmdStr){
     			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
 				session_unset();
 			}
-	?>
+	
+
+	if ($_SESSION['uname'] == 'root'){?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
@@ -95,10 +97,16 @@ function executePlainSQL($link, $cmdStr){
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
 	<button name="logout" type="submit" value="true">Logout</button>
     <div name="transphp"><br></br><?php include 'trans.php';?></div>
+	</form><?php 
+	}else{?>
+	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
+		<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+		<button name="summary" type="submit" value="true">Gallery Summary</button>
+		<button name="logout" type="submit" value="true">Logout</button>
 	</form>
 
-
 	<?php
+	}
 
 	if (isset($_GET['summary']) or isset($_POST['summary'])){?>
 		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
