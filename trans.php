@@ -59,6 +59,7 @@
 
 <?php }
     
+    
 
     /*
      ============================== ATTEMPT 1 ==============================
@@ -139,13 +140,33 @@
     
 
 
-    
-    
+    if (isset($_GET['return']) || isset($_POST['returnsql'])){
+            ?>
+    <form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 
-    
+        <! ----------------------- CLIENT SELECTION ----------------------->
+        Purchases:
+        <select name="select_work">
+        <?php
+            
+            $result = executePlainSQL($link,"SELECT * FROM purchase");
+            while($row = mysqli_fetch_array($result)) {
+                $snum =  $row['serial_number'] ;
+                
+                $art = executePlainSQL($link, "Select a.title from Art a where a.serial_number = '.$snum '");
+                $tid =  $row['transaction_id'] ;
+                echo "<option value=".$tid.">transacton id: ".$tid." serial number: ".$snum."</option>";
+                
+            }
+            
+            ?>
+        </select>
 
+        <button name='returnsql' type='submit' value='true'>Complete Return</button>
+        </br></form>
 
-    
-       
+        <! ----------------------- method for submitting next----------------------->
 
+    <?php }
+   
 ?>
