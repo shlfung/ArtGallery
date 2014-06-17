@@ -88,6 +88,7 @@ function executePlainSQL($link, $cmdStr){
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
 	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+	<button name="summary" type="submit" value="true">Gallery Summary</button>
 	<button name="trans" type="submit" value="true">Administer Transaction</button>
     <button name="return" type="submit" value="true">Administer Return</button>
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
@@ -99,40 +100,74 @@ function executePlainSQL($link, $cmdStr){
 
 	<?php
 
+	if (isset($_GET['summary']) or isset($_POST['summary'])){?>
+		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+			Show artists'
+		<select name="maxmin">
+			<option value="max">max</option>
+			<option value="min">min</option>
+		</select>
+		sale price
+		<button name="summary" type="submit" value="true">Go</button>
+		</form>
+
+	<?php
+	}
+
+	if (isset($_POST['maxmin'])){
+		$result = executePlainSQL($link, 'SELECT ar.fname as fname, ar.lname as lname,'.$_POST['maxmin'].'(a.price) as price
+											  FROM artists ar, supplies s, art a
+											  WHERE ar.phone = s.phone and s.serial_number = a.serial_number
+											  GROUP BY ar.lname');
+		echo "<table  align=center>
+		<tr>
+		<th>Lastname</th>
+		<th>Firstname</th>
+		<th>".$_POST['maxmin']." price</th>
+		</tr>";
+
+		while ($row = mysqli_fetch_array($result)){
+			echo '<tr>';
+			echo '<td>'.$row['lname'].'</td>';
+			echo '<td>'.$row['fname'].'</td>';
+			echo '<td>$'.$row['price'].'</td>';
+			echo '</tr>';
+		}
+		echo '</table>';
+	}
+	
 	//inventory
-
-
-	if (isset($_GET['inventory']) or isset($_GET['invfbartist']) or isset($_GET['invfbvalue'])){
+	if (isset($_GET['inventory']) or isset($_POST['invfbartist']) or isset($_POST['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
-		if (isset($_GET['invfbartist']) && $_GET['artist']){
+		if (isset($_POST['invfbartist']) && $_POST['artist']){
 			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE ar.phone = s.phone and s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
 			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE ar.phone = s.phone and s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
-		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'gthan'){
+		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'gthan'){
 			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE ar.phone = s.phone and a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
 			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE ar.phone = s.phone and a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
-		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'lthan'){
+		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'lthan'){
 			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE ar.phone = s.phone and a.price < ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
 			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE ar.phone = s.phone and a.price < ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		else {
@@ -145,7 +180,7 @@ function executePlainSQL($link, $cmdStr){
 			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
-		echo "<form action='http://localhost/cs304/gallerydb.php' method='get'>";
+		echo "<form action='http://localhost/cs304/gallerydb.php' method='post'>";
 		echo "<div align=center>";
 		echo 'Filter by Artist:';
 		echo '<select name ="artist">';
