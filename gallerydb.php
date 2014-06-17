@@ -131,7 +131,8 @@ th {
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
 	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
-	<button name="trans" type="submit" value="true">Administer Transaction</button><br>
+	<button name="trans" type="submit" value="true">Administer Transaction</button>
+	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
     <div name="transphp"><br></br><?php include 'trans.php';?></div>
 	</form>
@@ -683,9 +684,39 @@ if (isset($_GET['popular_artists'])){
 	
 }
 
+if (isset($_GET['invite_clients'])){
+	?>
+	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
+		<h2 >Invite Clients For an Exhibition</h2>
+		Exhibition Name: <input type="text" name="ename"><br>
+		<button name="invitesql" type="submit" value="true">Invite All Clients</button>
+	</form>
+	<?php	
+}		
+
+if (isset($_POST['invitesql'])){
+	$Exhibition=$_POST['invitesql'];
+	$client = executePlainSQL($link,"SELECT *
+											FROM clients");
+
+	while($row = mysqli_fetch_array($client)){
+		//send email
+		$to = $row['email'];
+		$subject = $Exhibition;
+		$message = "Dear ".$row['fname']." ".$row['lname']." \n\n 
+
+										We invite you to visit our gallery for our new exhibition called ".$Exhibition.".\n
+
+										Please RSVP asap\n\n
+
+										Thank you! ";
+		mail($to,$subject,$message);
+		
+	}
+	echo "<p align=center style='font-size:30'>Invitations Sent!</p>";
+}	
 
 ?>
-
 </form>
 <?php
 function test_input($data) {
