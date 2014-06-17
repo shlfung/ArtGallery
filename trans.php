@@ -1,5 +1,5 @@
 <?php
-    if (isset($_GET['trans'])){
+    if (isset($_GET['trans']) || isset($_POST['transsql'])){
         ?>
         <form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 
@@ -57,62 +57,91 @@
 
         <! ----------------------- method for submitting next----------------------->
 
-<?php
-    }
+<?php }
     
-    if(isset($_POST['transsql'])){
-        echo "<p>HIIIIIII<p/>";
-        
-        //DEALING WITH IMPROPER VALS
-//        $priceErr= "";
-//        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//            $priceErr =validate_number($_POST["sellp"]);
-//            
-//        }
-       
-//todo: error handling
-//        if (!empty($fnameErr) or !empty($lnameErr) or !empty($phoneErr) or !empty($emailErr)) {
-//    		echo "<p align=center size:large>Artist was not added!</p>";
-//  		}
-        
-//        issue_transaction
-//        (transaction_id int not null PRIMARY KEY,
-//         fname varchar(30) not null,
-//         lname varchar(30) not null,
-//         phone int not null);
 
-            $query = "insert into issue_transaction values('"
-            .test_input($_POST['phone'])."','"
-			.test_input($_POST['fname'])."','"
-			.test_input($_POST['lname'])."','"
-			.test_input($_POST['phone'])."');";
-            $success = executePlainSQL($link, $query);
-            if (is_string($success)) {
-                echo $success;
-            }else{
-                echo "<p align=center >Transaction added successfully.</p>";
-            }
-		
+    /*
+     ============================== ATTEMPT 1 ==============================
+     */
+    if(isset($_POST['transsql'])){
+    
+    $result = executePlainSQL($link,
+                              "SELECT A.serial_number FROM issue_transaction A WHERE A.transaction_id >= ALL (SELECT Issue_transaction.transaction_id FROM Issue_Transaction)");
+    
+    // Grab and Generate the new SQL Integer from the SQL Statement
+    while($row = mysqli_fetch_array($result)) {
+        echo $row['transaction_id'];
+        $newId = $row['transaction_id'];
+        echo "<br>";
     }
     
-    //trying out get method. scrap later
-//    if(isset($_GET['transsql'])){
-//       echo "<table  align=center>
-//       <tr>
-//       <th>Lastname</th>
-//       <th>Firstname</th>
-//       </tr>";
-//       
-//       $result = executePlainSQL($link, "SELECT * FROM artists");
-//       while ($row = mysqli_fetch_array($result)){
-//       echo '<tr>';
-//       echo '<td>'.$row['lname'].',</td>';
-//       echo '<td>'.$row['fname'].'</td>';
-//       echo '<tr>';
-//       }
-//       
-//       echo '</table>';
-//       }
+    $newId++;
+    
+    $query = "insert into issue_transaction values($newId,'"
+    .test_input($_POST['fname'])."','"
+    .test_input($_POST['lname'])."','"
+    .test_input($_POST['phone'])."');";
+    $success = executePlainSQL($link, $query);
+    if (is_string($success)) {
+        echo $success;
+    }else{
+        echo "<p align=center >Transaction added successfully.</p>";
+    }
+    
+    
+    //$query = "insert into issue_transaction values (123456, 'first', 'last', '1234')";
+    
+    }
+    
+    /*
+     ============================== ATTEMPT 2 ==============================
+     */
+
+    if (isset($_POST['transsql'])) {
+            echo "<br>HELLO</br>";
+        }
+    
+    /*
+     ============================== ATTEMPT 3 ==============================
+     */
+
+    if (isset($_POST['transsql'])) {
+        // Find the largest serial number and add 1 to be the new serial number
+        $result = executePlainSQL($link,
+                                  "SELECT A.serial_number FROM issue_transaction A WHERE A.transaction_id >= ALL (SELECT Issue_transaction.transaction_id FROM Issue_Transaction)");
+                                  
+          // Grab and Generate the new SQL Integer from the SQL Statement
+          while($row = mysqli_fetch_array($result)) {
+              echo $row['transaction_id'];
+              $newId = $row['transaction_id'];
+              echo "<br>";
+          }
+        
+        $newId++;
+        echo $newId;
+        echo "<br>";
+        
+//          $query="INSERT INTO art VALUES ($newSerial,'"
+//          .$_POST['ptitle']."','"
+//          .$_POST['pprice']."','"
+//          .$_POST['purl']."');";
+//          $query2="INSERT INTO painting VALUES($newSerial,'"
+//          .$_POST['pmedium']."','"
+//          .$_POST['pstyle']."');";
+//          
+//          $success =  executePlainSQL($link, $query);
+//          $success2 = executePlainSQL($link, $query2);
+//          if ($success and $success2) {
+//          echo "Statement: <br>".$query."<br>Executed successfully.";
+//          echo "Statement: <br>".$query2."<br>Executed successfully.";        
+//                                  }
+        }
+    
+
+
+    
+    
+
     
 
 
