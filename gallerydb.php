@@ -53,12 +53,14 @@ function executePlainSQL($link, $cmdStr){
 			echo 'Success... ' . mysqli_get_host_info($link) . "<br>";
 	}
 	if (!isset($_SESSION['uname'])){
-		?>	
-		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+		?>
+		<div id='login'>
+		<form align='center' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 			Login:<input type="text" name="uname">
 			Password:<input type="password" name="password">
 			<input type="submit" value="Login">
-		</form><?php
+		</form>
+		</div><?php
 	}
 
 	if (isset($_SESSION['uname'])){
@@ -103,44 +105,44 @@ function executePlainSQL($link, $cmdStr){
 	if (isset($_GET['inventory']) or isset($_GET['invfbartist']) or isset($_GET['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
-		if (isset($_GET['invfbartist'])){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		if (isset($_GET['invfbartist']) && $_GET['artist']){
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'gthan'){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'lthan'){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE a.price < ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE a.price < ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		else {
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
 		echo "<form action='http://localhost/cs304/gallerydb.php' method='get'>";
@@ -176,6 +178,7 @@ function executePlainSQL($link, $cmdStr){
 		<th>Title</th>
 		<th>Material</th>
 		<th>Price</th>
+		<th>Image</th>
 		</tr>";
 
 		while ($row = mysqli_fetch_array($result)){
@@ -189,6 +192,7 @@ function executePlainSQL($link, $cmdStr){
 				echo '<td>'.$row['medium'].'</td>';
 			}
 			echo '<td>$'.$row['price'].'</td>';
+			echo '<td><img src="'.$row['url'].'" style="max-height: 100px; max-width: 100px"></td>';
 			echo '</tr>';
 		}
 		echo '</table>';
