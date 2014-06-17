@@ -72,7 +72,6 @@ create table artists
     email varchar(30),
     phone varchar(30)not null,
     status varchar(30),
-    pic_url text,
     PRIMARY KEY (fname, lname, phone));
 
 create table supplies
@@ -96,15 +95,15 @@ create table receives_commission
     foreign key (fname, lname, phone) references artists (fname, lname, phone) on delete cascade on update cascade);
 
 insert into artists values
-  ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive', 'http://upload.wikimedia.org/wikipedia/en/4/41/Portrait_of_Pablo_Picasso%2C_1908-1909%2C_anonymous_photographer%2C_Mus%C3%A9e_Picasso%2C_Paris...jpg');
+  ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
 insert into artists values
-  ('Henri', 'Mattisse', 'Place Henri Mattise', 'Paris', 'Ile-de-France', 'France', '75020', 'riteofspring@nice.com', 5552565223, 'inactive', 'http://upload.wikimedia.org/wikipedia/commons/b/b1/Portrait_of_Henri_Matisse_1933_May_20.jpg');
+  ('Henri', 'Mattisse', 'Place Henri Mattise', 'Paris', 'Ile-de-France', 'France', '75020', 'riteofspring@nice.com', 5552565223, 'inactive');
 insert into artists values
-  ('Claude', 'Monet', 'Lycee General Claude Monet', 'Paris', 'Ile-de-France', 'France', '75013', 'waterlily@pondlife.com', 5556124553, 'inactive', 'http://upload.wikimedia.org/wikipedia/commons/a/a4/Claude_Monet_1899_Nadar_crop.jpg');
+  ('Claude', 'Monet', 'Lycee General Claude Monet', 'Paris', 'Ile-de-France', 'France', '75013', 'waterlily@pondlife.com', 5556124553, 'inactive');
 insert into artists values
-  ('Weiwei', 'Ai', 'Caochangdi', 'Beijing', 'Beijing', 'China', '75432', 'notsorry@caochagdi.com', 5554656253, 'active', 'http://upload.wikimedia.org/wikipedia/commons/4/46/Ai_weiwei-.jpg');
+  ('Weiwei', 'Ai', 'Caochangdi', 'Beijing', 'Beijing', 'China', '75432', 'notsorry@caochagdi.com', 5554656253, 'active');
 insert into artists values
-  ('Damien', 'Hirst', '42 New Compton St', 'London', 'London', 'United Kingdom', 'WC2H 8DA', 'sharklover@yba.com', 5556489895, 'active', 'http://upload.wikimedia.org/wikipedia/commons/4/4d/The_Future_of_Art_-_Damien_Hirst.jpg');
+  ('Damien', 'Hirst', '42 New Compton St', 'London', 'London', 'United Kingdom', 'WC2H 8DA', 'sharklover@yba.com', 5556489895, 'active');
 
 insert into art values
     (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg');
