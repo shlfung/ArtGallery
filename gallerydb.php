@@ -130,8 +130,10 @@ th {
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
-	<button name="inventory" type="submit" value="true">Gallery Inventory</button><br>
+	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+	<button name="trans" type="submit" value="true">Administer Transaction</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
+    <div name="transphp"><br></br><?php include 'trans.php';?></div>
 	</form>
 
 
