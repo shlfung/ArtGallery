@@ -1,9 +1,10 @@
 <?php
 session_start();
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 if (!isset($_SESSION['created'])){
 	$_SESSION['created'] = time();
 } elseif (time() - $_SESSION['created'] > 1800) {
+	session_unset();
 	session_regenerate_id(true);
 }
 
@@ -21,68 +22,36 @@ function executePlainSQL($link, $cmdStr){
 <head>
 	<title>Gallery DB</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<style type="text/css">
-body {
-	background-color: #98B2FA;
-}
-h1 {
-	font-size: 70;
-	color: #E3474A;
-}
-button {
-   border-top: 1px solid #1a1616;
-   background: #292129;
-   background: -webkit-gradient(linear, left top, left bottom, from(#5c5e87), to(#292129));
-   background: -webkit-linear-gradient(top, #5c5e87, #292129);
-   background: -moz-linear-gradient(top, #5c5e87, #292129);
-   background: -ms-linear-gradient(top, #5c5e87, #292129);
-   background: -o-linear-gradient(top, #5c5e87, #292129);
-   padding: 5px 10px;
-   -webkit-border-radius: 8px;
-   -moz-border-radius: 8px;
-   border-radius: 8px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: white;
-   font-size: 14px;
-   font-family: Georgia, serif;
-   text-decoration: none;
-   vertical-align: middle;
-   }
-button:hover {
-   border-top-color: #4b5257;
-   background: #4b5257;
-   color: #ccc;
-   }
-button:active {
-   border-top-color: #000000;
-   background: #000000;
-   }
-
-table, td, th {
-    border: 3px solid black;
-}
-td {
-    background-color:  gray;
-    color: white ;
-}
-th {
-    background-color:  black;
-    color: red;
-}
-</style>
-<style>
-.error {color: #FF0000;}
-</style>
+<link rel="stylesheet" type="text/css" href="gallerydb.css">
 </head>
 <body>
 	<h1 align="center"> <a href="http://localhost/cs304/gallerydb.php"> GalleryDB </a></h1>
 	<?php
 
 	// $link = '';
+	if (isset($_GET['logout'])){
+		session_unset();
+		session_destroy();
+		echo 'Logout Successful!';
+	}
 
+
+	if (isset($_POST['uname'])){
+			$link = mysqli_connect('localhost:3306', $_POST['uname'], $_POST['password'], 'gallerydb');
+			if (!$link){
+				die('Connect Error (' . mysqli_connect_errno() . ') '
+            	. mysqli_connect_error());
+            }
+			if (!mysqli_options($link, MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 0')) {
+    			die('Setting MYSQLI_INIT_COMMAND failed');
+			}
+			if (!mysqli_options($link, MYSQLI_OPT_CONNECT_TIMEOUT, 5)) {
+    			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
+			}
+			$_SESSION['uname'] = $_POST['uname'];
+			$_SESSION['password'] = $_POST['password'];
+			echo 'Success... ' . mysqli_get_host_info($link) . "<br>";
+	}
 	if (!isset($_SESSION['uname'])){
 		?>	
 		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
@@ -92,34 +61,20 @@ th {
 		</form><?php
 	}
 
-	if (isset($_POST['uname'])){
-			$_SESSION['uname'] = $_POST['uname'];
-			$_SESSION['password'] = $_POST['password'];
-			$link = mysqli_connect('localhost:3306', $_SESSION['uname'], $_SESSION['password'], 'gallerydb');
-			if (!$link){
-				die('Connect Error (' . mysqli_connect_errno() . ') '
-            	. mysqli_connect_error());
-			}
-			if (!mysqli_options($link, MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 0')) {
-    			die('Setting MYSQLI_INIT_COMMAND failed');
-			}
-			if (!mysqli_options($link, MYSQLI_OPT_CONNECT_TIMEOUT, 5)) {
-    			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
-			}
-			echo 'Success... ' . mysqli_get_host_info($link) . "<br><br>";
-	}
-
 	if (isset($_SESSION['uname'])){
 			$link = mysqli_connect('localhost:3306', $_SESSION['uname'], $_SESSION['password'], 'gallerydb');
 			if (!$link){
 				die('Connect Error (' . mysqli_connect_errno() . ') '
             	. mysqli_connect_error());
-			}
+				session_unset();
+            }
 			if (!mysqli_options($link, MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 0')) {
     			die('Setting MYSQLI_INIT_COMMAND failed');
-			}
+				session_unset();
+    		}
 			if (!mysqli_options($link, MYSQLI_OPT_CONNECT_TIMEOUT, 5)) {
     			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
+				session_unset();
 			}
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
@@ -134,6 +89,7 @@ th {
 	<button name="trans" type="submit" value="true">Administer Transaction</button>
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
+	<button name="logout" type="submit" value="true">Logout</button>
     <div name="transphp"><br></br><?php include 'trans.php';?></div>
 	</form>
 
@@ -141,6 +97,7 @@ th {
 	<?php
 
 	//inventory
+
 
 	if (isset($_GET['inventory']) or isset($_GET['invfbartist']) or isset($_GET['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
