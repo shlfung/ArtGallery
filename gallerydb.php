@@ -168,11 +168,11 @@ th {
 		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'lthan'){
 			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE a.price > ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE a.price < ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
 			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE a.price < ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		else {
@@ -305,10 +305,10 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle">
+         Title: <input type="text" name="ptitle"><br>
          Price: <input type="text" name="pprice"> <br>
-         Medium: <input type="text" name="pmedium">
-         Style: <input type="text" name="pstyle"> 
+         Medium: <input type="text" name="pmedium"><br>
+         Style: <input type="text" name="pstyle"><br>
          Image Link: <input type="text" name="purl"> <br>
          Comission Rate: <input type='number' name='pcommission'>
          Choose Artist: <select name="select_artist">
