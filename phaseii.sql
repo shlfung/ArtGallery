@@ -1,5 +1,8 @@
-CREATE DATABASE GALLERYDB;
-USE GALLERYDB;
+DROP DATABASE IF EXISTS ARTGALLERYDB ;
+CREATE DATABASE ARTGALLERYDB;
+USE ARTGALLERYDB;
+set Foreign_key_checks =0;
+
 
 
 create table clients
@@ -24,7 +27,8 @@ create table art
   (serial_number int not null PRIMARY KEY,
     title varchar(38),
     price decimal(65,2) unsigned not null,
-    pic_url text);
+    pic_url text,
+	sold bool default 0);
 
 create table sculpture
   (serial_number int not null PRIMARY KEY,
@@ -106,23 +110,23 @@ insert into artists values
   ('Damien', 'Hirst', '42 New Compton St', 'London', 'London', 'United Kingdom', 'WC2H 8DA', 'sharklover@yba.com', 5556489895, 'active');
 
 insert into art values
-    (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg');
+    (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg', 0);
 insert into painting values
     (12345, 'Oil on Canvas', 'Western');
 insert into art values
-    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg');
+    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg', 1);
 insert into sculpture values
     (12346, 'Platinum and Diamonds', 'Modern');
 insert into art values
-    (12347, 'Han Dynasty Vase', 45000, 'http://www.phaidon.com/resource/ins-absent-2.jpg');
+    (12347, 'Han Dynasty Vase', 45000, 'http://www.phaidon.com/resource/ins-absent-2.jpg', 1);
 insert into sculpture values
     (12347, 'Han Dynasty Vase, paint', 'Asian');
 insert into art values
-    (12348, 'Water Lilies', 92000, 'http://upload.wikimedia.org/wikipedia/commons/2/2a/Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg');
+    (12348, 'Water Lilies', 92000, 'http://upload.wikimedia.org/wikipedia/commons/2/2a/Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg', 0);
 insert into painting values
     (12348, 'Oil on Canvas', 'Western');
 insert into art values
-    (12349, 'The Dance', 22000, 'http://upload.wikimedia.org/wikipedia/en/2/2e/La_danse_%28I%29_by_Matisse.jpg');
+    (12349, 'The Dance', 22000, 'http://upload.wikimedia.org/wikipedia/en/2/2e/La_danse_%28I%29_by_Matisse.jpg', 0);
 insert into painting values
     (12349, 'Oil on Canvas', 'Western');
 
@@ -165,6 +169,8 @@ insert into purchase values
     (54323, 20140530, 124, 'mc', '3335 2324 1555 4555', 32000, 12345);
 insert into purchase values
     (54324, 20140531, 125, 'visa', '5665 5468 5648 6548', 80000, 12346);
+insert into purchase values
+    (54322, 20140531, 126 , 'cash', null, 56000, 12347);
 insert into purchase_return values
     (54321, 20140602, 'cash', null, 21000, 12349);
 insert into purchase_return values
@@ -172,3 +178,5 @@ insert into purchase_return values
 
 insert into receives_commission values
     (54324, 'Damien', 'Hirst', 5556489895, 29000);
+
+set Foreign_key_checks =1;

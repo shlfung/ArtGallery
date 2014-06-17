@@ -87,6 +87,7 @@ function executePlainSQL($link, $cmdStr){
 	<button name="dclient" type="submit" value="true">Delete Client</button>
 	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
 	<button name="trans" type="submit" value="true">Administer Transaction</button>
+    <button name="return" type="submit" value="true">Administer Return</button>
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
 	<button name="logout" type="submit" value="true">Logout</button>
@@ -311,7 +312,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      $query="INSERT INTO art VALUES ($newSerial,'"
      .$_POST['ptitle']."','"
      .$_POST['pprice']."','"
-     .$_POST['purl']."');";
+     .$_POST['purl']."', '0');";
      $query2="INSERT INTO painting VALUES($newSerial,'"
      .$_POST['pmedium']."','"
      .$_POST['pstyle']."');";
