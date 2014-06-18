@@ -128,6 +128,8 @@ th {
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
     <button name="apainting" type="submit" value="true">Add Painting</button>
+    <button name="asculpture" type="submit" value="true">Add Sculpture</button>
+    <button name="uprice" type="submit" value="true">Update Prices</button>
 	<button name="fartist" type="submit" value="true">Find Artist</button>
 	<button name="fclient" type="submit" value="true">Find Client</button> <br>
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
@@ -312,7 +314,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
          Medium: <input type="text" name="pmedium">
          Style: <input type="text" name="pstyle"> 
          Image Link: <input type="text" name="purl"> <br>
-         Comission Rate: <input type='number' name='pcommission'>
+         Comission Rate: <input type='text' name='pcommission'>
          Choose Artist: <select name="select_artist">
     <?php
       
@@ -349,6 +351,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
          $newSerial = $row['serial_number'];
          echo "<br>";
      }
+     //$newSerial = $result;
      $newSerial++;
      echo $newSerial;
      echo "<br>";
@@ -486,6 +489,52 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
       }
     }
 
+    // Update Prices in the Inventory
+
+    if (isset($_GET['uprice']) || isset($_POST['upricesql'])) {
+     ?>   
+         <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
+         Updated Price: <input type="text" name="new_price">
+         <br>
+         Choose Artist: <select name="select_art">
+     <?php
+         //Generating Artist Selection    	
+	$theArts = executePlainSQL($link,"SELECT serial_number, title, price FROM Art");
+		while($row = mysqli_fetch_array($theArts)) {
+			$serial_number =  $row['serial_number'] ;
+			$title =  $row['title'] ;
+			$price =  $row['price'] ;
+			echo "<option value=".$serial_number.">" .$title. ','
+									 .$price. ','
+									 .$serial_number. 
+							"</option>";
+         }
+    echo "</select> ";
+    ?>
+
+     <button name='upricesql' type='submit' value='true'>Update</button>
+     </form>
+
+    <?php
+    }
+
+    if (isset($_POST['upricesql'])) {
+
+     $newPrice = $_POST['new_price'];
+     $selectedArtSerial = $_POST['select_art'];
+
+      // Update the Price of the Arts
+      $updateArtPrice= executePlainSQL($link,"UPDATE Art SET Price=$newPrice WHERE serial_number=$selectedArtSerial");
+  
+      if ($updateArtPrice) {
+          echo "<br>";
+          echo "Price Updated";  
+      }
+
+    }
+
+
+  
 	/////////////////////////////////////////////////// ADD CLIENT ----------------------------------------------------->
 
 	if (isset($_GET['aclient']) || isset($_POST['aclientsql'])){ //either the get flag is set or the client is being posted
