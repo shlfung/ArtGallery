@@ -444,7 +444,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     }
 
     if (isset($_POST['asculpturesql'])) {
-    	if(empty($_POST['ptitle']) OR empty($_POST['pprice']) OR empty($_POST['pcommission'])){
+    	if(empty($_POST['stitle']) OR empty($_POST['sprice']) OR empty($_POST['scommission'])){
     				echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> " ;
     		}else{
 
