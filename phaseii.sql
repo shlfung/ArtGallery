@@ -1,4 +1,4 @@
-DROP DATABASE GALLERYDB;
+DROP DATABASE IF EXISTS GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
 
@@ -94,11 +94,11 @@ create table receives_commission
     foreign key (transaction_id) references issue_transaction (transaction_id) on delete cascade on update cascade,
     foreign key (fname, lname, phone) references artists (fname, lname, phone) on delete cascade on update cascade);
 
-CREATE TRIGGER insUsr BEFORE INSERT ON clients
-    FOR EACH ROW 
-    INSERT INTO mysql.user (host, user, password)
-    VALUES('localhost',lower(concat(New.fname, New.lname)),PASSWORD(new.phone));
- 
+-- CREATE TRIGGER insUsr BEFORE INSERT ON clients
+--     FOR EACH ROW 
+--     INSERT INTO mysql.user (host, user, password)
+--     VALUES('localhost',lower(concat(New.fname, New.lname)),PASSWORD(new.phone));
+--  
 
 insert into artists values
   ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
@@ -252,18 +252,17 @@ insert into supplies values
 insert into supplies values
     ('Dude', 'McGee', 6656489895, 50, 12354);
 insert into supplies values
-    ('Karl', 'Abt', 5556489897, 50, 12355);
+    ('Karl', 'Abt', 5556489897, 50, 12376);
 
 insert into supplies values
-	('Leo', 'Davinc', 5666489895, 5556124553, 12366)
+	('Leo', 'Davinc', 5666489895, 5556124553, 12366);
 insert into supplies values
     ('Sigmar', 'Polke', 5666489895, 50, 12367);
 insert into supplies values
     ('Daily', 'Dally', 5556489896, 55, 12386);
 insert into supplies values
-    ('Sandro', 'Botti' 1234567800, 60, 12396);
-insert into supplies values
-    ('Donatello', 'Bardi', 9988888889, 50, 12351);
+    ('Sandro', 'Botti', 1234567800, 60, 12396);
+
     
     
 insert into issue_transaction values
