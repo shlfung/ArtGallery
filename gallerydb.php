@@ -313,17 +313,18 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		}
 	}
 
-    //////////////////////////////////////////// ADD PAINTING //////////////////////////////////////
+ //////////////////////////////////////////// ADD PAINTING //////////////////////////////////////
 
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle"><br>
-         Price: <input type="text" name="pprice"> <br>
+     	<span class="error">* required field</span><br>
+         Title: <input type="text" name="ptitle"><span class="error">*</span><br>
+         Price: <input type="text" name="pprice"><span class="error">*</span><br>
          Medium: <input type="text" name="pmedium"><br>
          Style: <input type="text" name="pstyle"><br>
          Image Link: <input type="text" name="purl"> <br>
-         Comission Rate: <input type='text' name='pcommission'>
+         Comission Rate: <input type='text' name='pcommission'><span class="error">*</span>
          Choose Artist: <select name="select_artist">
     <?php
 
@@ -348,7 +349,9 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     }
 
     if (isset($_POST['apaintingsql'])) {
-
+    		if(empty($_POST['ptitle']) OR empty($_POST['pprice']) OR empty($_POST['pcommission'])){
+    				echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> " ;
+    		}else{
 			// Find the largest serial number and add 1 to be the new serial number
      $result = executePlainSQL($link, "SELECT MAX(A.serial_number) as serial_number FROM Art A");
 
@@ -364,12 +367,12 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      echo "<br>";
 
      $query="INSERT INTO art VALUES ($newSerial,'"
-     .$_POST['ptitle']."','"
-     .$_POST['pprice']."','"
-     .$_POST['purl']."', '0');";
+     .test_input($_POST['ptitle'])."','"
+     .test_input($_POST['pprice'])."','"
+     .test_input($_POST['purl'])."', '0');";
      $query2="INSERT INTO painting VALUES($newSerial,'"
-     .$_POST['pmedium']."','"
-     .$_POST['pstyle']."');";
+     .test_input($_POST['pmedium'])."','"
+     .test_input($_POST['pstyle'])."');";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
@@ -393,7 +396,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
       echo $artistPhone;
       echo $newSerial;
 
-      $commission = $_POST['pcommission'];
+      $commission = test_input($_POST['pcommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
@@ -402,6 +405,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
           echo "<br>";
           echo "Statement: <br>".$query3."<br>Executed successfully.";
       }
+ 	 }
     }
 
     //////////////////////////////////////////// ADD SCULPTURE //////////////////////////////////////
@@ -409,12 +413,13 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['asculpture']) || isset($_POST['asculpturesql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="stitle"><br>
-         Price: <input type="text" name="sprice"> <br>
+     	<span class="error">* Required Field</span><br>
+         Title: <input type="text" name="stitle"><span class="error">*</span><br>
+         Price: <input type="text" name="sprice"><span class="error">*</span><br>
          Material: <input type="text" name="smaterial"><br>
          Style: <input type="text" name="sstyle"><br>
          Image Link: <input type="text" name="surl"> <br>
-         Comission Rate: <input type='number' name='scommission'>
+         Comission Rate: <input type='number' name='scommission'><span class="error">*</span>
          Choose Artist: <select name="select_artist">
     <?php
 
@@ -439,6 +444,9 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     }
 
     if (isset($_POST['asculpturesql'])) {
+    	if(empty($_POST['ptitle']) OR empty($_POST['pprice']) OR empty($_POST['pcommission'])){
+    				echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> " ;
+    		}else{
 
      $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
 
@@ -456,12 +464,12 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      echo "<br>";
 
      $query="INSERT INTO art VALUES ($newSerial,'"
-     .$_POST['stitle']."','"
-     .$_POST['sprice']."','"
-     .$_POST['surl']."');";
+     .test_input($_POST['stitle'])."','"
+     .test_input($_POST['sprice'])."','"
+     .test_input($_POST['surl'])."');";
      $query2="INSERT INTO sculpture VALUES($newSerial,'"
-     .$_POST['smaterial']."','"
-     .$_POST['sstyle']."');";
+     .test_input($_POST['smaterial'])."','"
+     .test_input($_POST['sstyle'])."');";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
@@ -485,7 +493,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
       echo $artistPhone;
       echo $newSerial;
 
-      $commission = $_POST['scommission'];
+      $commission = test_input($_POST['scommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
@@ -494,7 +502,13 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
           echo "<br>";
           echo "Statement: <br>".$query3."<br>Executed successfully.";
       }
+  }
     }
+
+
+    ///////////////////////////////////////////////// UPDATE PRICE /////////////////////////////////////////
+
+
     if (isset($_POST['upricesql'])) {
 
      $newPrice = $_POST['new_price'];
