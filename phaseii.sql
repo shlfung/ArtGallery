@@ -262,8 +262,7 @@ insert into supplies values
 insert into supplies values
     ('Daily', 'Dally', 5556489896, 55, 12386);
 insert into supplies values
-<<<<<<< HEAD
-    ('Sandro', 'Botti' 1234567800, 60, 12396);
+    ('Sandro', 'Botti', 1234567800, 60, 12396);
 insert into supplies values
     ('Donatello', 'Bardi', 9988888889, 50, 12351);
 
