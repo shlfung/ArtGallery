@@ -318,7 +318,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-     	<span class="error">* Required field</span><br>
+     	<span class="error">* required field</span><br>
          Title: <input type="text" name="ptitle"><span class="error">*</span><br>
          Price: <input type="text" name="pprice"><span class="error">*</span><br>
          Medium: <input type="text" name="pmedium"><br>
@@ -356,15 +356,13 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      $result = executePlainSQL($link, "SELECT MAX(A.serial_number) as serial_number FROM Art A");
 
 		 while($obj = mysqli_fetch_object($result)) {
-			    echo "<br>";
+			   
 		      $newSerial = $obj->serial_number;
-					echo "<br>";
+					
 		 }
 
 		
      $newSerial++;
-     echo $newSerial;
-     echo "<br>";
 
      $query="INSERT INTO art VALUES ($newSerial,'"
      .test_input($_POST['ptitle'])."','"
@@ -376,10 +374,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
-     if ($success and $success2) {
-         echo "Statement: <br>".$query."<br>Executed successfully.";
-         echo "Statement: <br>".$query2."<br>Executed successfully.";
-     }
+
 
      // Insert the Art and Artist to the Supplies Table
      $artistInfo = executePlainSQL($link,"SELECT * FROM artists WHERE phone = '".$_POST['select_artist']."'");
@@ -391,19 +386,15 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
         }
 
       echo "<br>";
-      echo $artistFname;
-      echo $artistLname;
-      echo $artistPhone;
-      echo $newSerial;
+      
 
       $commission = test_input($_POST['pcommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
       $success3 = executePlainSQL($link, $query3);
-      if ($success3) {
-          echo "<br>";
-          echo "Statement: <br>".$query3."<br>Executed successfully.";
+      if ($success and $success2 and $success3) {
+          echo '<p align=center>"'.$_POST['ptitle'].'"" Was successfully added!</p>';
       }
  	 }
     }
@@ -455,13 +446,12 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
      // Grab and Generate the new SQL Integer from the SQL Statement
      while($row = mysqli_fetch_array($result)) {
-         echo $row['serial_number'];
          $newSerial = $row['serial_number'];
-         echo "<br>";
+         
      }
      $newSerial++;
-     echo $newSerial;
-     echo "<br>";
+     
+    
 
      $query="INSERT INTO art VALUES ($newSerial,'"
      .test_input($_POST['stitle'])."','"
@@ -473,10 +463,6 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
-     if ($success and $success2) {
-         echo "Statement: <br>".$query."<br>Executed successfully.";
-         echo "Statement: <br>".$query2."<br>Executed successfully.";
-     }
 
      // Insert the Art and Artist to the Supplies Table
      $artistInfo = executePlainSQL($link,"SELECT * FROM artists WHERE phone = '".$_POST['select_artist']."'");
@@ -488,19 +474,14 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
         }
 
       echo "<br>";
-      echo $artistFname;
-      echo $artistLname;
-      echo $artistPhone;
-      echo $newSerial;
 
       $commission = test_input($_POST['scommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
       $success3 = executePlainSQL($link, $query3);
-      if ($success3) {
-          echo "<br>";
-          echo "Statement: <br>".$query3."<br>Executed successfully.";
+      if ($success and $success2 and $success3) {
+          echo '<p align=center>"'.$_POST['stitle'].'"" Was successfully added!</p>';
       }
   }
     }
