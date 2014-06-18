@@ -138,8 +138,8 @@ th {
 	<button name="trans" type="submit" value="true">Administer Transaction</button>
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
-    <div name="transphp"><br></br><?php include 'trans.php';?></div>
 	</form>
+    <div name="transphp"><br></br><?php include 'trans.php';?></div>
 
 
 	<?php
