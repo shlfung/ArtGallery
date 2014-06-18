@@ -411,7 +411,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
          Title: <input type="text" name="stitle"><br>
          Price: <input type="text" name="sprice"> <br>
-         Material: <input type="text" name="smaterial">
+         Material: <input type="text" name="smaterial"><br>
          Style: <input type="text" name="sstyle"><br>
          Image Link: <input type="text" name="surl"> <br>
          Comission Rate: <input type='number' name='scommission'>
