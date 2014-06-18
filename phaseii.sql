@@ -127,7 +127,7 @@ insert into artists values
 insert into artists values
   ('Shalah', 'Aghapour', '34 Chicken St', 'Istanbul', 'Istanbul', 'Turkey', '33430', 'noidea@gmail.com', 5556489898, 'active');
 insert into artists values
-  ('Lidia', 'Abdul', '542 Iran Ave', 'Tehran', 'Tehran', 'Iran', '888888', 'labdul@iran.org', 5556489898, 'active');
+  ('Lidia', 'Abdul', '542 Iran Ave', 'Tehran', 'Tehran', 'Iran', '888888', 'labdul@iran.org', 7777777777, 'active');
 insert into artists values
   ('Casade', 'Fresh', '4323 West 1003', 'New York', 'New York', 'U.S.A', '58823', 'iloveny@nyny.com', 5556489890, 'active');
 insert into artists values
@@ -240,7 +240,32 @@ insert into supplies values
     ('Claude', 'Monet', 5556124553, 50, 12348);
 insert into supplies values
     ('Weiwei', 'Ai', 5554656253, 50, 12347);
+    
+insert into supplies values
+	('Shalah', 'Aghapour', 5556489898, 60, 12350);
+insert into supplies values
+    ('Lidia', 'Abdul', 7777777777, 50, 12351);
+insert into supplies values
+    ('Casade', 'Fresh', 5556489890, 55, 12352);
+insert into supplies values
+    ('Mel', 'Kay', 5556489895, 60, 12353);
+insert into supplies values
+    ('Dude', 'McGee', 6656489895, 50, 12354);
+insert into supplies values
+    ('Karl', 'Abt', 5556489897, 50, 12355);
 
+insert into supplies values
+	('Leo', 'Davinc', 5666489895, 5556124553, 12366)
+insert into supplies values
+    ('Sigmar', 'Polke', 5666489895, 50, 12367);
+insert into supplies values
+    ('Daily', 'Dally', 5556489896, 55, 12386);
+insert into supplies values
+    ('Sandro', 'Botti' 1234567800, 60, 12396);
+insert into supplies values
+    ('Donatello', 'Bardi', 9988888889, 50, 12351);
+    
+    
 insert into issue_transaction values
     (54321, 'John', 'Doe', 5554356364);
 insert into issue_transaction values
