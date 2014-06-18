@@ -35,6 +35,7 @@ function executePlainSQL($link, $cmdStr){
 		echo 'Logout Successful!';
 	}
 
+   //////////////////////////////////////////// CONNECTING TO DATABASE //////////////////////////////////////
 
 	if (isset($_POST['uname'])){
 			$link = mysqli_connect('localhost:3306', $_POST['uname'], $_POST['password'], 'gallerydb');
@@ -112,6 +113,8 @@ function executePlainSQL($link, $cmdStr){
 	<?php
 	}
 
+ //////////////////////////////////////////// GALLERY SUMMARY //////////////////////////////////////
+
 	if (isset($_GET['summary']) or isset($_POST['summary'])){?>
 		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 			Show artists'
@@ -148,7 +151,8 @@ function executePlainSQL($link, $cmdStr){
 		echo '</table>';
 	}
 
-	//inventory
+	//////////////////////////////////////////// INVENTORY //////////////////////////////////////
+
 	if (isset($_GET['inventory']) or isset($_POST['invfbartist']) or isset($_POST['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
@@ -246,7 +250,7 @@ function executePlainSQL($link, $cmdStr){
 	}
 
 
-	// adding an artist
+	//////////////////////////////////////////// ADDING ARTIST  //////////////////////////////////////
 
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
@@ -309,7 +313,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		}
 	}
 
-    // adding a painting
+    //////////////////////////////////////////// ADD PAINTING //////////////////////////////////////
 
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
@@ -400,15 +404,15 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
       }
     }
 
-    // adding a sculpture
+    //////////////////////////////////////////// ADD SCULPTURE //////////////////////////////////////
 
     if (isset($_GET['asculpture']) || isset($_POST['asculpturesql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="stitle">
+         Title: <input type="text" name="stitle"><br>
          Price: <input type="text" name="sprice"> <br>
          Material: <input type="text" name="smaterial">
-         Style: <input type="text" name="sstyle">
+         Style: <input type="text" name="sstyle"><br>
          Image Link: <input type="text" name="surl"> <br>
          Comission Rate: <input type='number' name='scommission'>
          Choose Artist: <select name="select_artist">
@@ -591,7 +595,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 	}
 }
 
-// finding an artist
+//////////////////////////////////////////// FIND ARTIST //////////////////////////////////////
 
 if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fallartistsql']) || isset($_POST['find_artist_by_wildcard'])){
 	?>
@@ -732,7 +736,7 @@ if (isset($_POST['fallartistsql'])){
 	}
 }
 
-//finding a client
+//////////////////////////////////////////// FIND CLIENT //////////////////////////////////////
 
 if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fallclientsql']) || isset($_POST['find_client_by_wildcard'])){
 	?>
@@ -874,7 +878,6 @@ if (isset($_POST['find_client_by_wildcard'])){
 
  /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->
 
-// delete an artist
 
 if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 	?>
@@ -913,7 +916,7 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 
 }
 
-//delete a client
+//////////////////////////////////////////// DELETE CLIENT //////////////////////////////////////
 
 if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	?>
@@ -952,6 +955,8 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	echo "</form>" 	;
 
 }
+
+//////////////////////////////////////////// POPULAR ARTIST (DIVISION) //////////////////////////////////////
 
 if (isset($_GET['popular_artists'])){
 	?>
@@ -997,6 +1002,8 @@ if (isset($_GET['popular_artists'])){
 
 }
 
+//////////////////////////////////////////// INVITE CLIENTS //////////////////////////////////////
+
 if (isset($_GET['invite_clients'])){
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
@@ -1032,6 +1039,9 @@ if (isset($_POST['invitesql'])){
 ?>
 </form>
 <?php
+
+//////////////////////////////////////////// FUNCTIONS //////////////////////////////////////
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
