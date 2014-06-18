@@ -345,19 +345,16 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
     if (isset($_POST['apaintingsql'])) {
 
-     $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
+			// Find the largest serial number and add 1 to be the new serial number
+     $result = executePlainSQL($link, "SELECT MAX(A.serial_number) as serial_number FROM Art A");
 
-     // Find the largest serial number and add 1 to be the new serial number
-     //$result9 = executePlainSQL($link, "SELECT MAX(A.serial_number) FROM Art A");
-     //vardump($result9);
+		 while($obj = mysqli_fetch_object($result)) {
+			    echo "<br>";
+		      $newSerial = $obj->serial_number;
+					echo "<br>";
+		 }
 
-     // Grab and Generate the new SQL Integer from the SQL Statement
-     while($row = mysqli_fetch_array($result)) {
-         echo $row['serial_number'];
-         $newSerial = $row['serial_number'];
-         echo "<br>";
-     }
-     //$newSerial = $result;
+		
      $newSerial++;
      echo $newSerial;
      echo "<br>";
