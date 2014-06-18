@@ -35,6 +35,7 @@ function executePlainSQL($link, $cmdStr){
 		echo 'Logout Successful!';
 	}
 
+   //////////////////////////////////////////// CONNECTING TO DATABASE //////////////////////////////////////
 
 	if (isset($_POST['uname'])){
 			$link = mysqli_connect('localhost:3306', $_POST['uname'], $_POST['password'], 'gallerydb');
@@ -112,6 +113,8 @@ function executePlainSQL($link, $cmdStr){
 	<?php
 	}
 
+ //////////////////////////////////////////// GALLERY SUMMARY //////////////////////////////////////
+
 	if (isset($_GET['summary']) or isset($_POST['summary'])){?>
 		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 			Show artists'
@@ -148,7 +151,8 @@ function executePlainSQL($link, $cmdStr){
 		echo '</table>';
 	}
 
-	//inventory
+	//////////////////////////////////////////// INVENTORY //////////////////////////////////////
+
 	if (isset($_GET['inventory']) or isset($_POST['invfbartist']) or isset($_POST['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
@@ -246,7 +250,7 @@ function executePlainSQL($link, $cmdStr){
 	}
 
 
-	// adding an artist
+	//////////////////////////////////////////// ADDING ARTIST  //////////////////////////////////////
 
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
@@ -262,7 +266,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Artist</h2>
-		<p><span class="error">* required field.</span></p>
+		<p><span class="error">* Required field</span></p>
 		First Name: <input type="text" name="afname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
 		Last Name: <input type="text" name="alname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="astreet"> <br>
@@ -309,17 +313,18 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		}
 	}
 
-    // adding a painting
+ //////////////////////////////////////////// ADD PAINTING //////////////////////////////////////
 
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle"><br>
-         Price: <input type="text" name="pprice"> <br>
+     	<span class="error">* required field</span><br>
+         Title: <input type="text" name="ptitle"><span class="error">*</span><br>
+         Price: <input type="text" name="pprice"><span class="error">*</span><br>
          Medium: <input type="text" name="pmedium"><br>
          Style: <input type="text" name="pstyle"><br>
          Image Link: <input type="text" name="purl"> <br>
-         Comission Rate: <input type='text' name='pcommission'>
+         Comission Rate: <input type='text' name='pcommission'><span class="error">*</span>
          Choose Artist: <select name="select_artist">
     <?php
 
@@ -344,38 +349,32 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     }
 
     if (isset($_POST['apaintingsql'])) {
+    		if(empty($_POST['ptitle']) OR empty($_POST['pprice']) OR empty($_POST['pcommission'])){
+    				echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> " ;
+    		}else{
+			// Find the largest serial number and add 1 to be the new serial number
+     $result = executePlainSQL($link, "SELECT MAX(A.serial_number) as serial_number FROM Art A");
 
-     $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
+		 while($obj = mysqli_fetch_object($result)) {
+			   
+		      $newSerial = $obj->serial_number;
+					
+		 }
 
-     // Find the largest serial number and add 1 to be the new serial number
-     //$result9 = executePlainSQL($link, "SELECT MAX(A.serial_number) FROM Art A");
-     //vardump($result9);
-
-     // Grab and Generate the new SQL Integer from the SQL Statement
-     while($row = mysqli_fetch_array($result)) {
-         echo $row['serial_number'];
-         $newSerial = $row['serial_number'];
-         echo "<br>";
-     }
-     //$newSerial = $result;
+		
      $newSerial++;
-     echo $newSerial;
-     echo "<br>";
 
      $query="INSERT INTO art VALUES ($newSerial,'"
-     .$_POST['ptitle']."','"
-     .$_POST['pprice']."','"
-     .$_POST['purl']."', '0');";
+     .test_input($_POST['ptitle'])."','"
+     .test_input($_POST['pprice'])."','"
+     .test_input($_POST['purl'])."', '0');";
      $query2="INSERT INTO painting VALUES($newSerial,'"
-     .$_POST['pmedium']."','"
-     .$_POST['pstyle']."');";
+     .test_input($_POST['pmedium'])."','"
+     .test_input($_POST['pstyle'])."');";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
-     if ($success and $success2) {
-         echo "Statement: <br>".$query."<br>Executed successfully.";
-         echo "Statement: <br>".$query2."<br>Executed successfully.";
-     }
+
 
      // Insert the Art and Artist to the Supplies Table
      $artistInfo = executePlainSQL($link,"SELECT * FROM artists WHERE phone = '".$_POST['select_artist']."'");
@@ -387,33 +386,31 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
         }
 
       echo "<br>";
-      echo $artistFname;
-      echo $artistLname;
-      echo $artistPhone;
-      echo $newSerial;
+      
 
-      $commission = $_POST['pcommission'];
+      $commission = test_input($_POST['pcommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
       $success3 = executePlainSQL($link, $query3);
-      if ($success3) {
-          echo "<br>";
-          echo "Statement: <br>".$query3."<br>Executed successfully.";
+      if ($success and $success2 and $success3) {
+          echo '<p align=center>"'.$_POST['ptitle'].'"" Was successfully added!</p>';
       }
+ 	 }
     }
 
-    // adding a sculpture
+    //////////////////////////////////////////// ADD SCULPTURE //////////////////////////////////////
 
     if (isset($_GET['asculpture']) || isset($_POST['asculpturesql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="stitle">
-         Price: <input type="text" name="sprice"> <br>
-         Material: <input type="text" name="smaterial">
-         Style: <input type="text" name="sstyle">
+     	<span class="error">* Required Field</span><br>
+         Title: <input type="text" name="stitle"><span class="error">*</span><br>
+         Price: <input type="text" name="sprice"><span class="error">*</span><br>
+         Material: <input type="text" name="smaterial"><br>
+         Style: <input type="text" name="sstyle"><br>
          Image Link: <input type="text" name="surl"> <br>
-         Comission Rate: <input type='number' name='scommission'>
+         Comission Rate: <input type='number' name='scommission'><span class="error">*</span>
          Choose Artist: <select name="select_artist">
     <?php
 
@@ -438,6 +435,9 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     }
 
     if (isset($_POST['asculpturesql'])) {
+    	if(empty($_POST['stitle']) OR empty($_POST['sprice']) OR empty($_POST['scommission'])){
+    				echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> " ;
+    		}else{
 
      $result = executePlainSQL($link, "SELECT A.serial_number FROM Art A WHERE A.serial_number >= ALL (SELECT Art.serial_number FROM Art)");
 
@@ -446,28 +446,23 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
      // Grab and Generate the new SQL Integer from the SQL Statement
      while($row = mysqli_fetch_array($result)) {
-         echo $row['serial_number'];
          $newSerial = $row['serial_number'];
-         echo "<br>";
+         
      }
      $newSerial++;
-     echo $newSerial;
-     echo "<br>";
+     
+    
 
      $query="INSERT INTO art VALUES ($newSerial,'"
-     .$_POST['stitle']."','"
-     .$_POST['sprice']."','"
-     .$_POST['surl']."');";
+     .test_input($_POST['stitle'])."','"
+     .test_input($_POST['sprice'])."','"
+     .test_input($_POST['surl'])."');";
      $query2="INSERT INTO sculpture VALUES($newSerial,'"
-     .$_POST['smaterial']."','"
-     .$_POST['sstyle']."');";
+     .test_input($_POST['smaterial'])."','"
+     .test_input($_POST['sstyle'])."');";
 
      $success =  executePlainSQL($link, $query);
      $success2 = executePlainSQL($link, $query2);
-     if ($success and $success2) {
-         echo "Statement: <br>".$query."<br>Executed successfully.";
-         echo "Statement: <br>".$query2."<br>Executed successfully.";
-     }
 
      // Insert the Art and Artist to the Supplies Table
      $artistInfo = executePlainSQL($link,"SELECT * FROM artists WHERE phone = '".$_POST['select_artist']."'");
@@ -479,21 +474,22 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
         }
 
       echo "<br>";
-      echo $artistFname;
-      echo $artistLname;
-      echo $artistPhone;
-      echo $newSerial;
 
-      $commission = $_POST['scommission'];
+      $commission = test_input($_POST['scommission']);
 
       $query3="INSERT INTO supplies VALUES('$artistFname', '$artistLname', $artistPhone, $commission, $newSerial)";
 
       $success3 = executePlainSQL($link, $query3);
-      if ($success3) {
-          echo "<br>";
-          echo "Statement: <br>".$query3."<br>Executed successfully.";
+      if ($success and $success2 and $success3) {
+          echo '<p align=center>"'.$_POST['stitle'].'"" Was successfully added!</p>';
       }
+  }
     }
+
+
+    ///////////////////////////////////////////////// UPDATE PRICE /////////////////////////////////////////
+
+
     if (isset($_POST['upricesql'])) {
 
      $newPrice = $_POST['new_price'];
@@ -554,7 +550,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Client</h2>
-		<p><span class="error">* required field.</span></p>
+		<p><span class="error">* Required field</span></p>
 		First Name: <input type="text" name="cfname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
 		Last Name: <input type="text" name="clname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="cstreet"><br>
@@ -594,7 +590,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 	}
 }
 
-// finding an artist
+//////////////////////////////////////////// FIND ARTIST //////////////////////////////////////
 
 if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fallartistsql']) || isset($_POST['find_artist_by_wildcard'])){
 	?>
@@ -735,7 +731,7 @@ if (isset($_POST['fallartistsql'])){
 	}
 }
 
-//finding a client
+//////////////////////////////////////////// FIND CLIENT //////////////////////////////////////
 
 if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fallclientsql']) || isset($_POST['find_client_by_wildcard'])){
 	?>
@@ -877,7 +873,6 @@ if (isset($_POST['find_client_by_wildcard'])){
 
  /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->
 
-// delete an artist
 
 if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 	?>
@@ -916,7 +911,7 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 
 }
 
-//delete a client
+//////////////////////////////////////////// DELETE CLIENT //////////////////////////////////////
 
 if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	?>
@@ -955,6 +950,8 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	echo "</form>" 	;
 
 }
+
+//////////////////////////////////////////// POPULAR ARTIST (DIVISION) //////////////////////////////////////
 
 if (isset($_GET['popular_artists'])){
 	?>
@@ -1000,6 +997,8 @@ if (isset($_GET['popular_artists'])){
 
 }
 
+//////////////////////////////////////////// INVITE CLIENTS //////////////////////////////////////
+
 if (isset($_GET['invite_clients'])){
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
@@ -1035,6 +1034,9 @@ if (isset($_POST['invitesql'])){
 ?>
 </form>
 <?php
+
+//////////////////////////////////////////// FUNCTIONS //////////////////////////////////////
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);

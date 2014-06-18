@@ -184,15 +184,15 @@ insert into art values
 insert into sculpture values
     (12376, 'Metal', 'Modern');
 insert into art values
-    (12386, 'Horsyy', 58000, 'http://en.wikipedia.org/wiki/Sculpture#mediaviewer/File:Lammasu.jpg', 0);
+    (12386, 'Horsyy', 58000, 'http://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Lammasu.jpg/800px-Lammasu.jpg', 0);
 insert into sculpture values
     (12386, 'Stone', 'Modern');
 insert into art values
-    (12396, 'Moses', 4320000, 'http://en.wikipedia.org/wiki/Sculpture#mediaviewer/File:Moses_San_Pietro_in_Vincoli.jpg', 0);
+    (12396, 'Moses', 4320000, 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Moses_San_Pietro_in_Vincoli.jpg/270px-Moses_San_Pietro_in_Vincoli.jpg', 0);
 insert into sculpture values
     (12396, 'Stone', 'Renaissance');
 insert into art values
-    (12367, 'Nitsuke', 565000, 'http://en.wikipedia.org/wiki/Sculpture#mediaviewer/File:Miyasaka_Hakuryu_II_-_Tigress_with_Two_Cubs_-_Walters_71909.jpg', 0);
+    (12367, 'Nitsuke', 565000, 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Miyasaka_Hakuryu_II_-_Tigress_with_Two_Cubs_-_Walters_71909.jpg/800px-Miyasaka_Hakuryu_II_-_Tigress_with_Two_Cubs_-_Walters_71909.jpg', 0);
 insert into sculpture values
     (12367, 'Ivory', '19th Century');
 
