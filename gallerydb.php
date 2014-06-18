@@ -98,8 +98,9 @@ function executePlainSQL($link, $cmdStr){
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
 	<button name="logout" type="submit" value="true">Logout</button>
+	</form> 
     <div name="transphp"><br></br><?php include 'trans.php';?></div>
-	</form><?php 
+	<?php
 	}else{?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
 		<button name="inventory" type="submit" value="true">Gallery Inventory</button>
@@ -594,7 +595,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 
 // finding an artist
 	
-if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
+if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fallartistsql']) || isset($_POST['find_artist_by_wildcard'])){
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Find Artist </h2>
@@ -607,6 +608,12 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
 		Search All Artists by City: <br>
 		City: <input type="text" name="facity"> <br> 
 		<button name="fallartistsql" type="submit" value="true">Find All Artists</button>
+		<hr width=50%>
+		Don't know their full name and phone number ? <br>
+		No problem! just type in their name or lastname or even just their phone number! <br><br>
+		
+		<input type="text" name="search_artist_wildcard"><br>
+		<button name="find_artist_by_wildcard" type="submit" value="true">Search</button
 	</form> 
 		<?php
 }
@@ -634,6 +641,7 @@ if (isset($_POST['fartistsql'])){
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
+		<th>Email</th>
 		<th>Status</th>
 		</tr>";
 		}
@@ -642,6 +650,46 @@ if (isset($_POST['fartistsql'])){
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
   	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['email'] . "</td>";
+  	echo "<td>" . $row['status'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+	}	
+}
+
+if (isset($_POST['find_artist_by_wildcard'])){
+	if (empty($_POST["search_artist_wildcard"])) {
+    		echo "<p style='color:yellow' align=center>  Please fill in the name field!  </p> <br><br>" ;
+  	}else{
+  		$artist_wildcard =test_input($_POST['search_artist_wildcard']);
+  		$result = executePlainSQL($link,"SELECT * FROM artists WHERE fname LIKE  '%$artist_wildcard%' 
+  															   OR    lname LIKE  '%$artist_wildcard%'
+  															   OR    phone LIKE  '%$artist_wildcard%'");
+
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		<th>Email</th>
+		<th>Status</th>
+		</tr>";
+		}
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['email'] . "</td>";
   	echo "<td>" . $row['status'] . "</td>";
   	echo "</tr>";
 	}
@@ -687,7 +735,7 @@ if (isset($_POST['fallartistsql'])){
 
 //finding a client
 
-if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
+if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fallclientsql']) || isset($_POST['find_client_by_wildcard'])){
 	?>
 	<h2 align=center>Find Client </h2> 
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
@@ -700,6 +748,13 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql'])){
 		Search All Clients by City: <br>
 		City: <input type="text" name="fccity"> <br> 
 		<button name="fallclientsql" type="submit" value="true">Find All Clients</button>
+		
+		<hr width=50%>
+		Don't know their full name and phone number ? <br>
+		No problem! just type in their name or lastname or even just their phone number! <br><br>
+		
+		<input type="text" name="search_client_wildcard"><br>
+		<button name="find_client_by_wildcard" type="submit" value="true">Search</button>
 	</form> 
 		<?php
 }
@@ -727,6 +782,7 @@ if (isset($_POST['fclientsql'])){
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
+		<th>Email</th>
 		</tr>";
 		}
 	while($row = mysqli_fetch_array($result)) {
@@ -734,6 +790,7 @@ if (isset($_POST['fclientsql'])){
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
   	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['email'] . "</td>";
   	echo "</tr>";
 	}
 
@@ -760,6 +817,7 @@ if (isset($_POST['fallclientsql'])){
 		<th>Firstname</th>
 		<th>Lastname</th>
 		<th>Phone Number</th>
+		<th>Email</th>
 		</tr>";
 		}
 	while($row = mysqli_fetch_array($result)) {
@@ -767,12 +825,53 @@ if (isset($_POST['fallclientsql'])){
   	echo "<td>" . $row['fname'] . "</td>";
   	echo "<td>" . $row['lname'] . "</td>";
   	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['email'] . "</td>";
   	echo "</tr>";
 	}
 
 	echo "</table>";
 	}	
 }	
+if (isset($_POST['find_client_by_wildcard'])){
+	if (empty($_POST["search_client_wildcard"])) {
+    		echo "<p style='color:yellow' align=center>  Please fill in the name field!  </p> <br><br>" ;
+  	}else{
+  		$client_wildcard =test_input($_POST['search_client_wildcard']);
+  		$result = executePlainSQL($link,"SELECT * FROM clients WHERE fname LIKE  '%$client_wildcard%' 
+  															   OR    lname LIKE  '%$client_wildcard%'
+  															   OR    phone LIKE  '%$client_wildcard%'");
+  		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		<th>Email</th>
+		</tr>";
+		}
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['email'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+	}
+}	
+
+
+
+ /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->	
 
 // delete an artist
 
@@ -784,21 +883,31 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 		<select name="select_artist">
 	<?php
 	if (isset($_POST['dartistsql'])){
-		$delete = executePlainSQL($link,"DELETE  FROM artists WHERE  phone = '".$_POST['select_artist']."'");
+		$artist_pieces = explode(" ", $_POST['select_artist']);
+		$afname_piece = $artist_pieces[0];
+		$alname_piece = $artist_pieces[1];
+		$aphone_piece = $artist_pieces[2];
+		$delete = executePlainSQL($link,"DELETE  FROM artists WHERE  fname='$afname_piece'
+															  AND    lname='$alname_piece'
+															  AND    phone='$aphone_piece'");
 	}	
 	$result = executePlainSQL($link,"SELECT * FROM artists");
 		while($row = mysqli_fetch_array($result)) {
 			$fname =  $row['fname'] ;
 			$lname =  $row['lname'] ;
 			$phone =  $row['phone'] ;
-			echo "<option value=".$phone.">" .$fname. ','
+			echo '<option value="'.$fname. ' '.$lname.' '.$phone.'" >' 
+									 .$fname. ','
 									 .$lname. ','
 									 .$phone. 
-							"</option>";
+							'</option>';
 
 		}
 	echo "</select> ";
-	echo "<button name='dartistsql' type='submit' value='true'>Delete</button>";
+	echo "<button name='dartistsql' type='submit' value='true'>Delete</button><br><br>";
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	echo "<p style='font-size:24'>$afname_piece $alname_piece deleted!</p>";
+	}
 	echo "</form>" 	;
 
 }
@@ -813,21 +922,31 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 		<select name="select_client">
 	<?php
 	if (isset($_POST['dclientsql'])){
-		$delete = executePlainSQL($link,"DELETE  FROM clients WHERE  phone = '".$_POST['select_client']."'");
+		$client_pieces = explode(" ", $_POST['select_client']);
+		$cfname_piece = $client_pieces[0];
+		$clname_piece = $client_pieces[1];
+		$cphone_piece = $client_pieces[2];
+		$delete = executePlainSQL($link,"DELETE  FROM clients WHERE  fname='$cfname_piece'
+															  AND    lname='$clname_piece'
+															  AND    phone='$cphone_piece'");
 	}	
 	$result = executePlainSQL($link,"SELECT * FROM clients");
 		while($row = mysqli_fetch_array($result)) {
 			$fname =  $row['fname'] ;
 			$lname =  $row['lname'] ;
 			$phone =  $row['phone'] ;
-			echo "<option value=".$phone.">" .$fname. ','
+			echo '<option value="'.$fname. ' '.$lname.' '.$phone.'" >' 
+									 .$fname. ','
 									 .$lname. ','
 									 .$phone. 
 							"</option>";
 
 		}
 	echo "</select> ";
-	echo "<button name='dclientsql' type='submit' value='true'>Delete</button>";
+	echo "<button name='dclientsql' type='submit' value='true'>Delete</button><br><br>";
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	echo "<p style='font-size:24'>$cfname_piece $clname_piece deleted!</p>";
+	}
 	echo "</form>" 	;
 
 }
