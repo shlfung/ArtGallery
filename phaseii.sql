@@ -3,7 +3,6 @@ DROP DATABASE IF EXISTS GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
 
-drop table if exists clients;
 create table clients
   (fname varchar(30) not null,
     lname varchar(30) not null,
@@ -14,13 +13,14 @@ create table clients
     pcode varchar(30),
     email varchar(30),
     phone varchar(30)not null,
-    PRIMARY KEY (fname, lname, phone))ENGINE=MyISAM;
+    PRIMARY KEY (fname, lname, phone));
 
 create table issue_transaction
   (transaction_id int not null PRIMARY KEY,
     fname varchar(30) not null,
     lname varchar(30) not null,
-    phone int not null);
+    phone varchar(30)not null,
+	foreign key(fname, lname, phone) references clients (fname, lname, phone));
 
 create table art
   (serial_number int not null PRIMARY KEY,
@@ -48,7 +48,7 @@ create table purchase
     amount int,
     serial_number int not null,
     PRIMARY KEY (transaction_id, serial_number),
-    foreign key(transaction_id) references issue_transaction (transaction_id),
+    foreign key(transaction_id) references issue_transaction (transaction_id) on delete cascade,
     foreign key(serial_number) references art (serial_number) );
 
 create table purchase_return
@@ -262,8 +262,7 @@ insert into supplies values
 insert into supplies values
     ('Daily', 'Dally', 5556489896, 55, 12386);
 insert into supplies values
-<<<<<<< HEAD
-    ('Sandro', 'Botti' 1234567800, 60, 12396);
+    ('Sandro', 'Botti', 1234567800, 60, 12396);
 insert into supplies values
     ('Donatello', 'Bardi', 9988888889, 50, 12351);
 
