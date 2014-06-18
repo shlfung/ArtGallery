@@ -1,9 +1,10 @@
 <?php
 session_start();
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 if (!isset($_SESSION['created'])){
 	$_SESSION['created'] = time();
 } elseif (time() - $_SESSION['created'] > 1800) {
+	session_unset();
 	session_regenerate_id(true);
 }
 
@@ -21,94 +22,45 @@ function executePlainSQL($link, $cmdStr){
 <head>
 	<title>Gallery DB</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<style type="text/css">
-body {
-	background-color: #98B2FA;
-}
-h1 {
-	font-size: 70;
-	color: #E3474A;
-}
-button {
-   border-top: 1px solid #1a1616;
-   background: #292129;
-   background: -webkit-gradient(linear, left top, left bottom, from(#5c5e87), to(#292129));
-   background: -webkit-linear-gradient(top, #5c5e87, #292129);
-   background: -moz-linear-gradient(top, #5c5e87, #292129);
-   background: -ms-linear-gradient(top, #5c5e87, #292129);
-   background: -o-linear-gradient(top, #5c5e87, #292129);
-   padding: 5px 10px;
-   -webkit-border-radius: 8px;
-   -moz-border-radius: 8px;
-   border-radius: 8px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: white;
-   font-size: 14px;
-   font-family: Georgia, serif;
-   text-decoration: none;
-   vertical-align: middle;
-   }
-button:hover {
-   border-top-color: #4b5257;
-   background: #4b5257;
-   color: #ccc;
-   }
-button:active {
-   border-top-color: #000000;
-   background: #000000;
-   }
-
-table, td, th {
-    border: 3px solid black;
-}
-td {
-    background-color:  gray;
-    color: white ;
-}
-th {
-    background-color:  black;
-    color: red;
-}
-
-
-</style>
-<style>
-.error {color: #FF0000;}
-</style>
+<link rel="stylesheet" type="text/css" href="gallerydb.css">
 </head>
 <body>
 	<h1 align="center"> <a href="http://localhost/cs304/gallerydb.php"> GalleryDB </a></h1>
 	<?php
 
-	/////////////////////////////////////////////////// CONNECTING TO DATABASE ----------------------------------------------------->
-
-	if (!isset($_SESSION['uname'])){
-		?>	
-		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-			Login:<input type="text" name="uname">
-			Password:<input type="password" name="password">
-			<input type="submit" value="Login">
-		</form><?php
+	// $link = '';
+	if (isset($_GET['logout'])){
+		session_unset();
+		session_destroy();
+		echo 'Logout Successful!';
 	}
 
+
 	if (isset($_POST['uname'])){
-			$_SESSION['uname'] = $_POST['uname'];
-			$_SESSION['password'] = $_POST['password'];
-			$link = mysqli_connect('localhost:3306', $_SESSION['uname'], $_SESSION['password'], 'gallerydb');
+			$link = mysqli_connect('localhost:3306', $_POST['uname'], $_POST['password'], 'gallerydb');
 			if (!$link){
 				die('Connect Error (' . mysqli_connect_errno() . ') '
             	. mysqli_connect_error());
-			}
+            }
 			if (!mysqli_options($link, MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 0')) {
     			die('Setting MYSQLI_INIT_COMMAND failed');
 			}
 			if (!mysqli_options($link, MYSQLI_OPT_CONNECT_TIMEOUT, 5)) {
     			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
 			}
-			echo 'Success... ' . mysqli_get_host_info($link) . "<br><br>";
+			$_SESSION['uname'] = $_POST['uname'];
+			$_SESSION['password'] = $_POST['password'];
+			echo 'Success... ' . mysqli_get_host_info($link) . "<br>";
+	}
+	if (!isset($_SESSION['uname'])){
+		?>
+		<div id='login'>
+		<form align='center' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+			Login:<input type="text" name="uname">
+			Password:<input type="password" name="password">
+			<input type="submit" value="Login">
+		</form>
+		</div><?php
 	}
 
 	if (isset($_SESSION['uname'])){
@@ -116,14 +68,19 @@ th {
 			if (!$link){
 				die('Connect Error (' . mysqli_connect_errno() . ') '
             	. mysqli_connect_error());
-			}
+				session_unset();
+            }
 			if (!mysqli_options($link, MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 0')) {
     			die('Setting MYSQLI_INIT_COMMAND failed');
-			}
+				session_unset();
+    		}
 			if (!mysqli_options($link, MYSQLI_OPT_CONNECT_TIMEOUT, 5)) {
     			die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
+				session_unset();
 			}
-	?>
+	
+
+	if ($_SESSION['uname'] == 'root'){?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
 	<button name="aartist" type="submit" value="true">Add Artist</button>
 	<button name="aclient" type="submit" value="true">Add Client</button>
@@ -135,61 +92,107 @@ th {
 	<button name="dartist" type="submit" value="true">Delete Artist</button>
 	<button name="dclient" type="submit" value="true">Delete Client</button>
 	<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+	<button name="summary" type="submit" value="true">Gallery Summary</button>
 	<button name="trans" type="submit" value="true">Administer Transaction</button>
+    <button name="return" type="submit" value="true">Administer Return</button>
 	<button name="invite_clients" type="submit" value="true">Invite Clients</button><br>
 	<button name="popular_artists" type="submit" value="true" style="color:red">Most Popular Artists of The Gallery</button>
+	<button name="logout" type="submit" value="true">Logout</button>
+	</form> 
+    <div name="transphp"><br></br><?php include 'trans.php';?></div>
+	<?php
+	}else{?>
+	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
+		<button name="inventory" type="submit" value="true">Gallery Inventory</button>
+		<button name="summary" type="submit" value="true">Gallery Summary</button>
+		<button name="logout" type="submit" value="true">Logout</button>
 	</form>
     <div name="transphp"><br></br><?php include 'trans.php';?></div>
 
+	<?php
+	}
+
+	if (isset($_GET['summary']) or isset($_POST['summary'])){?>
+		<form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
+			Show artists'
+		<select name="maxmin">
+			<option value="max">max</option>
+			<option value="min">min</option>
+		</select>
+		sale price
+		<button name="summary" type="submit" value="true">Go</button>
+		</form>
 
 	<?php
+	}
 
-	/////////////////////////////////////////////////// INVENTORY ----------------------------------------------------->
+	if (isset($_POST['maxmin'])){
+		$result = executePlainSQL($link, 'SELECT ar.fname as fname, ar.lname as lname,'.$_POST['maxmin'].'(a.price) as price
+											  FROM artists ar, supplies s, art a
+											  WHERE ar.phone = s.phone and s.serial_number = a.serial_number
+											  GROUP BY ar.lname');
+		echo "<table  align=center>
+		<tr>
+		<th>Lastname</th>
+		<th>Firstname</th>
+		<th>".$_POST['maxmin']." price</th>
+		</tr>";
 
-	if (isset($_GET['inventory']) or isset($_GET['invfbartist']) or isset($_GET['invfbvalue'])){
+		while ($row = mysqli_fetch_array($result)){
+			echo '<tr>';
+			echo '<td>'.$row['lname'].'</td>';
+			echo '<td>'.$row['fname'].'</td>';
+			echo '<td>$'.$row['price'].'</td>';
+			echo '</tr>';
+		}
+		echo '</table>';
+	}
+	
+	//inventory
+	if (isset($_GET['inventory']) or isset($_POST['invfbartist']) or isset($_POST['invfbvalue'])){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
-		if (isset($_GET['invfbartist'])){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		if (isset($_POST['invfbartist']) && $_POST['artist']){
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE s.phone = '".$_GET['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
-		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'gthan'){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'gthan'){
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
-		elseif (isset($_GET['invfbvalue']) && $_GET['gthan'] == 'lthan'){
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'lthan'){
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE a.price > ".$_GET['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE a.price > ".$_GET['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");			
 		}
 		else {
-			$result = executePlainSQL($link, "SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, sculpture sc, artists ar
-			 								WHERE s.serial_number = a.serial_number and s.serial_number = sc.serial_number
+			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
 			 								FROM supplies s, art a, painting p, artists ar
-			 								WHERE s.serial_number = a.serial_number and s.serial_number = p.serial_number
+			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
-		echo "<form action='http://localhost/cs304/gallerydb.php' method='get'>";
+		echo "<form action='http://localhost/cs304/gallerydb.php' method='post'>";
 		echo "<div align=center>";
 		echo 'Filter by Artist:';
 		echo '<select name ="artist">';
@@ -222,6 +225,7 @@ th {
 		<th>Title</th>
 		<th>Material</th>
 		<th>Price</th>
+		<th>Image</th>
 		</tr>";
 
 		while ($row = mysqli_fetch_array($result)){
@@ -235,13 +239,14 @@ th {
 				echo '<td>'.$row['medium'].'</td>';
 			}
 			echo '<td>$'.$row['price'].'</td>';
+			echo '<td><img src="'.$row['url'].'" style="max-height: 100px; max-width: 100px"></td>';
 			echo '</tr>';
 		}
 		echo '</table>';
 	}
 
 
-	/////////////////////////////////////////////////// ADD ARTIST ----------------------------------------------------->
+	// adding an artist
 
 
 	if (isset($_GET['aartist']) || isset($_POST['aartistsql'])){ //either the get flag is set or the artist is being posted
@@ -304,15 +309,15 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		}	
 	}
 
-    /////////////////////////////////////////////////// ADD PAINTING ----------------------------------------------------->
+    // adding a painting
 
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-         Title: <input type="text" name="ptitle">
+         Title: <input type="text" name="ptitle"><br>
          Price: <input type="text" name="pprice"> <br>
-         Medium: <input type="text" name="pmedium">
-         Style: <input type="text" name="pstyle"> 
+         Medium: <input type="text" name="pmedium"><br>
+         Style: <input type="text" name="pstyle"><br>
          Image Link: <input type="text" name="purl"> <br>
          Comission Rate: <input type='text' name='pcommission'>
          Choose Artist: <select name="select_artist">
@@ -359,7 +364,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
      $query="INSERT INTO art VALUES ($newSerial,'"
      .$_POST['ptitle']."','"
      .$_POST['pprice']."','"
-     .$_POST['purl']."');";
+     .$_POST['purl']."', '0');";
      $query2="INSERT INTO painting VALUES($newSerial,'"
      .$_POST['pmedium']."','"
      .$_POST['pstyle']."');";
@@ -397,7 +402,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
       }
     }
 
-    /////////////////////////////////////////////////// ADD SCULPTURE ----------------------------------------------------->
+    // adding a sculpture
 
     if (isset($_GET['asculpture']) || isset($_POST['asculpturesql'])) {
      ?>
@@ -488,9 +493,22 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
           echo "Statement: <br>".$query3."<br>Executed successfully.";  
       }
     }
+    if (isset($_POST['upricesql'])) {
+
+     $newPrice = $_POST['new_price'];
+     $selectedArtSerial = $_POST['select_art'];
+
+      // Update the Price of the Arts
+      $updateArtPrice= executePlainSQL($link,"UPDATE Art SET Price=$newPrice WHERE serial_number=$selectedArtSerial");
+  
+      if ($updateArtPrice) {
+          echo "<br>";
+          echo "Price Updated";  
+      }
+
+    }
 
     // Update Prices in the Inventory
-
     if (isset($_GET['uprice']) || isset($_POST['upricesql'])) {
      ?>   
          <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
@@ -518,20 +536,6 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     <?php
     }
 
-    if (isset($_POST['upricesql'])) {
-
-     $newPrice = $_POST['new_price'];
-     $selectedArtSerial = $_POST['select_art'];
-
-      // Update the Price of the Arts
-      $updateArtPrice= executePlainSQL($link,"UPDATE Art SET Price=$newPrice WHERE serial_number=$selectedArtSerial");
-  
-      if ($updateArtPrice) {
-          echo "<br>";
-          echo "Price Updated";  
-      }
-
-    }
 
 
   
@@ -557,7 +561,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		State/Province: <input type="text" name="cprovince"><br>
 		Country: <input type="text" name="ccountry"><br>
 		Postal Code: <input type="text" name="cpcode"><br>
-		Email: <input type="text" name="cemail"><span class="error"><?php echo "$emailErr";?></span><br>
+		Email: <input type="text" name="cemail"><span class="error">*<?php echo "$emailErr";?></span><br>
 		Phone: <input type="text" name="cphone"><span class="error">*<?php echo "$phoneErr";?></span><br>
 		<button name="aclientsql" type="submit" value="true">Add Client</button>
 		</form>
@@ -565,7 +569,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 	}
 
 	if (isset($_POST['aclientsql'])){
-		
+		echo $fnameErr . $lnameErr . $phoneErr . $emailErr;
 		if (!empty($fnameErr) or !empty($lnameErr) or !empty($phoneErr) or !empty($emailErr)) {
     		echo "<p align=center size:large>Client was not added!</p>";
   		}else{
@@ -589,7 +593,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 	}
 }
 
-/////////////////////////////////////////////////// FIND ARTIST ----------------------------------------------------->
+// finding an artist
 	
 if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fallartistsql']) || isset($_POST['find_artist_by_wildcard'])){
 	?>
@@ -609,14 +613,14 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fall
 		No problem! just type in their name or lastname or even just their phone number! <br><br>
 		
 		<input type="text" name="search_artist_wildcard"><br>
-		<button name="find_artist_by_wildcard" type="submit" value="true">Search</button>
+		<button name="find_artist_by_wildcard" type="submit" value="true">Search</button
 	</form> 
 		<?php
 }
 
 if (isset($_POST['fartistsql'])){
 	if (empty($_POST["fafname"]) or empty($_POST["falname"]) or empty($_POST["faphone"]) ) {
-    		echo "<p style='color:yellow' align=center>  All fields must be filled!  </p> <br><br>" ;
+    		echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> <br><br>" ;
   	}else{
 	    $Artist_fname = test_input($_POST['fafname']);
 	    $Artist_lname = test_input($_POST['falname']);
@@ -632,44 +636,7 @@ if (isset($_POST['fartistsql'])){
 			echo "<p align=center>No results found!</p>";
 		}
 		else{
-		echo "<table border='1' align=center>
-		<tr>
-		<th>Firstname</th>
-		<th>Lastname</th>
-		<th>Phone Number</th>
-		<th>Email</th>
-		<th>Status</th>
-		</tr>";
-		}
-	while($row = mysqli_fetch_array($result)) {
-  	echo "<tr>";
-  	echo "<td>" . $row['fname'] . "</td>";
-  	echo "<td>" . $row['lname'] . "</td>";
-  	echo "<td>" . $row['phone'] . "</td>";
-  	echo "<td>" . $row['email'] . "</td>";
-  	echo "<td>" . $row['status'] . "</td>";
-  	echo "</tr>";
-	}
-
-	echo "</table>";
-	}	
-}
-
-if (isset($_POST['fallartistsql'])){
-	if (empty($_POST["facity"])) {
-    		echo "<p style='color:yellow' align=center>  Please fill in the city field!  </p> <br><br>" ;
-  	}else{
-		$artist_city =test_input($_POST['facity']);
-		$result = executePlainSQL($link,"SELECT * FROM artists WHERE city='$artist_city'");
-
-		if (!$result) {
-   		 die('Invalid query: ' . mysql_error());
-		}
-		if (mysqli_num_rows($result) == 0){
-			echo "<p align=center>No results found!</p>";
-		}
-		else{
-		echo "<table border='1' align=center>
+		echo "<table align=center>
 		<tr>
 		<th>Firstname</th>
 		<th>Lastname</th>
@@ -731,7 +698,42 @@ if (isset($_POST['find_artist_by_wildcard'])){
 	}	
 }
 
-/////////////////////////////////////////////////// FIND CLIENT ----------------------------------------------------->
+if (isset($_POST['fallartistsql'])){
+	if (empty($_POST["facity"])) {
+    		echo "<p style='color:yellow' align=center>  Please fill in the city field!  </p> <br><br>" ;
+  	}else{
+		$artist_city =test_input($_POST['facity']);
+		$result = executePlainSQL($link,"SELECT * FROM artists WHERE city='$artist_city'");
+
+		if (!$result) {
+   		 die('Invalid query: ' . mysql_error());
+		}
+		if (mysqli_num_rows($result) == 0){
+			echo "<p align=center>No results found!</p>";
+		}
+		else{
+		echo "<table border='1' align=center>
+		<tr>
+		<th>Firstname</th>
+		<th>Lastname</th>
+		<th>Phone Number</th>
+		<th>Status</th>
+		</tr>";
+		}
+	while($row = mysqli_fetch_array($result)) {
+  	echo "<tr>";
+  	echo "<td>" . $row['fname'] . "</td>";
+  	echo "<td>" . $row['lname'] . "</td>";
+  	echo "<td>" . $row['phone'] . "</td>";
+  	echo "<td>" . $row['status'] . "</td>";
+  	echo "</tr>";
+	}
+
+	echo "</table>";
+	}	
+}
+
+//finding a client
 
 if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fallclientsql']) || isset($_POST['find_client_by_wildcard'])){
 	?>
@@ -746,6 +748,7 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fall
 		Search All Clients by City: <br>
 		City: <input type="text" name="fccity"> <br> 
 		<button name="fallclientsql" type="submit" value="true">Find All Clients</button>
+		
 		<hr width=50%>
 		Don't know their full name and phone number ? <br>
 		No problem! just type in their name or lastname or even just their phone number! <br><br>
@@ -758,7 +761,7 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fall
 
 if (isset($_POST['fclientsql'])){
 	if (empty($_POST["fcfname"]) or empty($_POST["fclname"]) or empty($_POST["fcphone"]) ) {
-    		echo "<p style='color:yellow' align=center>  All fields must be filled!  </p> <br><br>" ;
+    		echo "<p style='color:yellow' align=center>  All required fields must be filled!  </p> <br><br>" ;
   	}else{
 		$Client_fname = test_input($_POST['fcfname']);
 	    $Client_lname = test_input($_POST['fclname']);
@@ -829,7 +832,6 @@ if (isset($_POST['fallclientsql'])){
 	echo "</table>";
 	}	
 }	
-
 if (isset($_POST['find_client_by_wildcard'])){
 	if (empty($_POST["search_client_wildcard"])) {
     		echo "<p style='color:yellow' align=center>  Please fill in the name field!  </p> <br><br>" ;
@@ -865,11 +867,13 @@ if (isset($_POST['find_client_by_wildcard'])){
 
 	echo "</table>";
 	}
-  	}	
+}	
 
 
 
- /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->		
+ /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->	
+
+// delete an artist
 
 if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 	?>
@@ -899,7 +903,6 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 							'</option>';
 
 		}
-
 	echo "</select> ";
 	echo "<button name='dartistsql' type='submit' value='true'>Delete</button><br><br>";
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -909,7 +912,7 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 
 }
 
-/////////////////////////////////////////////////// DELETE CLIENT ----------------------------------------------------->
+//delete a client
 
 if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 	?>
@@ -936,7 +939,7 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 									 .$fname. ','
 									 .$lname. ','
 									 .$phone. 
-							'</option>';
+							"</option>";
 
 		}
 	echo "</select> ";
@@ -992,10 +995,6 @@ if (isset($_GET['popular_artists'])){
 	
 }
 
-
-/////////////////////////////////////////////////// INVITE CLIENT ----------------------------------------------------->
-
-
 if (isset($_GET['invite_clients'])){
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
@@ -1038,9 +1037,6 @@ function test_input($data) {
   return $data;
 }
 
-
-/////////////////////////////////////////////////// FUNCTIONS ----------------------------------------------------->
-
 function validate_name($data){
 	if(empty($data)){
 		return "Field is empty!";
@@ -1064,9 +1060,6 @@ function validate_email($data){
 	
 	}
 }
-
-
-
 ?>
 
 </body>

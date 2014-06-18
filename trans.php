@@ -1,5 +1,5 @@
 <?php
-    if (isset($_GET['trans'])){
+    if (isset($_GET['trans']) || isset($_POST['transsql'])){
         ?>
 <form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 
