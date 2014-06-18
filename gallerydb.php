@@ -266,7 +266,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Artist</h2>
-		<p><span class="error">* required field.</span></p>
+		<p><span class="error">* Required field</span></p>
 		First Name: <input type="text" name="afname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
 		Last Name: <input type="text" name="alname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="astreet"> <br>
@@ -318,7 +318,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
     if (isset($_GET['apainting']) || isset($_POST['apaintingsql'])) {
      ?>
      <form align="center" action='http://localhost/cs304/gallerydb.php' method="post">
-     	<span class="error">* required field</span><br>
+     	<span class="error">* Required field</span><br>
          Title: <input type="text" name="ptitle"><span class="error">*</span><br>
          Price: <input type="text" name="pprice"><span class="error">*</span><br>
          Medium: <input type="text" name="pmedium"><br>
@@ -569,7 +569,7 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 		?>
 		<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Add Client</h2>
-		<p><span class="error">* required field.</span></p>
+		<p><span class="error">* Required field</span></p>
 		First Name: <input type="text" name="cfname"> <span class="error">*<?php echo "$fnameErr";?></span> <br>
 		Last Name: <input type="text" name="clname"> <span class="error">*<?php echo "$lnameErr";?></span><br>
 		Street: <input type="text" name="cstreet"><br>
