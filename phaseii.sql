@@ -1,4 +1,3 @@
-DROP DATABASE GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
 
@@ -95,10 +94,10 @@ create table receives_commission
     foreign key (fname, lname, phone) references artists (fname, lname, phone) on delete cascade on update cascade);
 
 CREATE TRIGGER insUsr BEFORE INSERT ON clients
-    FOR EACH ROW 
+    FOR EACH ROW
     INSERT INTO mysql.user (host, user, password)
     VALUES('localhost',lower(concat(New.fname, New.lname)),PASSWORD(new.phone));
- 
+
 
 insert into artists values
   ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
@@ -240,7 +239,7 @@ insert into supplies values
     ('Claude', 'Monet', 5556124553, 50, 12348);
 insert into supplies values
     ('Weiwei', 'Ai', 5554656253, 50, 12347);
-    
+
 insert into supplies values
 	('Shalah', 'Aghapour', 5556489898, 60, 12350);
 insert into supplies values
@@ -264,8 +263,8 @@ insert into supplies values
     ('Sandro', 'Botti' 1234567800, 60, 12396);
 insert into supplies values
     ('Donatello', 'Bardi', 9988888889, 50, 12351);
-    
-    
+
+
 insert into issue_transaction values
     (54321, 'John', 'Doe', 5554356364);
 insert into issue_transaction values

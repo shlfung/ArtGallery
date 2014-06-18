@@ -595,13 +595,8 @@ $fnameErr = $lnameErr =$emailErr = $phoneErr= "";
 }
 
 // finding an artist
-<<<<<<< HEAD
-
-if (isset($_GET['fartist']) || isset($_POST['fartistsql'])){
-=======
 
 if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fallartistsql']) || isset($_POST['find_artist_by_wildcard'])){
->>>>>>> FETCH_HEAD
 	?>
 	<form align="center" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method='post'>
 		<h2 align=center>Find Artist </h2>
@@ -614,9 +609,7 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fall
 		Search All Artists by City: <br>
 		City: <input type="text" name="facity"> <br>
 		<button name="fallartistsql" type="submit" value="true">Find All Artists</button>
-<<<<<<< HEAD
-	</form>
-=======
+
 		<hr width=50%>
 		Don't know their full name and phone number ? <br>
 		No problem! just type in their name or lastname or even just their phone number! <br><br>
@@ -624,7 +617,6 @@ if (isset($_GET['fartist']) || isset($_POST['fartistsql']) || isset($_POST['fall
 		<input type="text" name="search_artist_wildcard"><br>
 		<button name="find_artist_by_wildcard" type="submit" value="true">Search</button
 	</form>
->>>>>>> FETCH_HEAD
 		<?php
 }
 
@@ -758,9 +750,7 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fall
 		Search All Clients by City: <br>
 		City: <input type="text" name="fccity"> <br>
 		<button name="fallclientsql" type="submit" value="true">Find All Clients</button>
-<<<<<<< HEAD
-	</form>
-=======
+
 
 		<hr width=50%>
 		Don't know their full name and phone number ? <br>
@@ -769,7 +759,6 @@ if (isset($_GET['fclient']) || isset($_POST['fclientsql']) || isset($_POST['fall
 		<input type="text" name="search_client_wildcard"><br>
 		<button name="find_client_by_wildcard" type="submit" value="true">Search</button>
 	</form>
->>>>>>> FETCH_HEAD
 		<?php
 }
 
@@ -844,10 +833,7 @@ if (isset($_POST['fallclientsql'])){
 	}
 
 	echo "</table>";
-<<<<<<< HEAD
-	}
-}
-=======
+
 	}
 }
 if (isset($_POST['find_client_by_wildcard'])){
@@ -890,7 +876,6 @@ if (isset($_POST['find_client_by_wildcard'])){
 
 
  /////////////////////////////////////////////////// DELETE ARTIST ----------------------------------------------------->
->>>>>>> FETCH_HEAD
 
 // delete an artist
 
@@ -902,10 +887,6 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 		<select name="select_artist">
 	<?php
 	if (isset($_POST['dartistsql'])){
-<<<<<<< HEAD
-		$delete = executePlainSQL($link,"DELETE  FROM artists WHERE  phone = '".$_POST['select_artist']."'");
-	}
-=======
 		$artist_pieces = explode(" ", $_POST['select_artist']);
 		$afname_piece = $artist_pieces[0];
 		$alname_piece = $artist_pieces[1];
@@ -914,7 +895,6 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 															  AND    lname='$alname_piece'
 															  AND    phone='$aphone_piece'");
 	}
->>>>>>> FETCH_HEAD
 	$result = executePlainSQL($link,"SELECT * FROM artists");
 		while($row = mysqli_fetch_array($result)) {
 			$fname =  $row['fname'] ;
@@ -923,13 +903,8 @@ if (isset($_GET['dartist']) || isset($_POST['dartistsql'])){
 			echo '<option value="'.$fname. ' '.$lname.' '.$phone.'" >'
 									 .$fname. ','
 									 .$lname. ','
-<<<<<<< HEAD
-									 .$phone.
-							"</option>";
-=======
 									 .$phone.
 							'</option>';
->>>>>>> FETCH_HEAD
 
 		}
 	echo "</select> ";
@@ -951,10 +926,7 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 		<select name="select_client">
 	<?php
 	if (isset($_POST['dclientsql'])){
-<<<<<<< HEAD
-		$delete = executePlainSQL($link,"DELETE  FROM clients WHERE  phone = '".$_POST['select_client']."'");
-	}
-=======
+
 		$client_pieces = explode(" ", $_POST['select_client']);
 		$cfname_piece = $client_pieces[0];
 		$clname_piece = $client_pieces[1];
@@ -963,7 +935,6 @@ if (isset($_GET['dclient']) || isset($_POST['dclientsql'])){
 															  AND    lname='$clname_piece'
 															  AND    phone='$cphone_piece'");
 	}
->>>>>>> FETCH_HEAD
 	$result = executePlainSQL($link,"SELECT * FROM clients");
 		while($row = mysqli_fetch_array($result)) {
 			$fname =  $row['fname'] ;
