@@ -157,41 +157,41 @@ function executePlainSQL($link, $cmdStr){
 		$filter = executePlainSQL($link, "SELECT *
 		 								FROM artists");
 		if (isset($_POST['invfbartist']) && $_POST['artist']){
-			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, sculpture sc, artists ar
 			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, painting p, artists ar
 			 								WHERE ar.phone = s.phone and s.phone = '".$_POST['artist']."' and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
 		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'gthan'){
-			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, sculpture sc, artists ar
 			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, painting p, artists ar
 			 								WHERE ar.phone = s.phone and a.price > ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
 		elseif (isset($_POST['invfbvalue']) && $_POST['gthan'] == 'lthan'){
-			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, sculpture sc, artists ar
 			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and  s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, painting p, artists ar
 			 								WHERE ar.phone = s.phone and a.price < ".$_POST['value']." and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
 		}
 		else {
-			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url
+			$result = executePlainSQL($link, "SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, sc.material as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, sculpture sc, artists ar
 			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = sc.serial_number
 			 								UNION
-			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url
+			 								SELECT DISTINCT ar.phone as phone, s.fname as fname, s.lname as lname, a.title as title, p.medium as medium, a.price as price, a.pic_url as url, a.sold as sold
 			 								FROM supplies s, art a, painting p, artists ar
 			 								WHERE ar.phone = s.phone and s.serial_number = a.serial_number and s.serial_number = p.serial_number
 			 								ORDER BY lname");
@@ -230,6 +230,7 @@ function executePlainSQL($link, $cmdStr){
 		<th>Material</th>
 		<th>Price</th>
 		<th>Image</th>
+		<th>Status</th>
 		</tr>";
 
 		while ($row = mysqli_fetch_array($result)){
@@ -244,6 +245,13 @@ function executePlainSQL($link, $cmdStr){
 			}
 			echo '<td>$'.$row['price'].'</td>';
 			echo '<td><img src="'.$row['url'].'" style="max-height: 100px; max-width: 100px"></td>';
+			echo '<td>';
+			if ($row['sold']){
+				echo 'Sold';
+			}else{
+				echo 'In Inventory';
+			}
+			echo '</td>';
 			echo '</tr>';
 		}
 		echo '</table>';
