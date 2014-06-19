@@ -100,6 +100,9 @@ CREATE TRIGGER insUsr BEFORE INSERT ON clients
     INSERT INTO mysql.user (host, user, password)
     VALUES('localhost',lower(concat(New.fname, New.lname)),PASSWORD(new.phone));
 
+CREATE TRIGGER deletePurchase before insert on purchase_return
+    FOR EACH ROW
+    DELETE FROM purchase, WHERE transaction_id = New.transaction_id;
 
 insert into artists values
   ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
@@ -139,7 +142,7 @@ insert into art values
 insert into painting values
     (12345, 'Oil on Canvas', 'Western');
 insert into art values
-    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg', 0);
+    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg', 12346);
 insert into sculpture values
     (12346, 'Platinum and Diamonds', 'Modern');
 insert into art values
@@ -207,29 +210,29 @@ insert into clients values
 insert into clients values
     ('Donovan', 'St-Vincent', '130 Main St.', 'Vancouver', 'BC', 'Canada', 'V17 3X6', 'donovansv@mail.com', '5554354666');
 insert into clients values
-	('Sam', 'Rothstein', '1242 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'imaboss@gmail.com', '1818181818');
+    ('Sam', 'Rothstein', '1242 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'imaboss@gmail.com', '1818181818');
 insert into clients values
-	('Mary', 'Rothstein', '1242 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'imalsoaboss@gmail.com', '1818181818');
+    ('Mary', 'Rothstein', '1242 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'imalsoaboss@gmail.com', '1818181818');
 insert into clients values
-	('Martyn', 'Kool', '355 Oak St.', 'Vancouver', 'BC', 'Canada', 'V56 5N1', 'kool@gmail.com', '1010101010');
+    ('Martyn', 'Kool', '355 Oak St.', 'Vancouver', 'BC', 'Canada', 'V56 5N1', 'kool@gmail.com', '1010101010');
 insert into clients values
-	('Ben', 'Williams', '666 Horrid St.', 'Vancouver', 'BC', 'Canada', 'V5H 8H1', 'imnotcool@gmail.com', '1234567890');
+    ('Ben', 'Williams', '666 Horrid St.', 'Vancouver', 'BC', 'Canada', 'V5H 8H1', 'imnotcool@gmail.com', '1234567890');
 insert into clients values
-	('Annie', 'Mac', '1342 11th AVE', 'Surrey', 'BC', 'Canada', 'V5M 9H1', 'whopps@gmail.com', '6667891011');
+    ('Annie', 'Mac', '1342 11th AVE', 'Surrey', 'BC', 'Canada', 'V5M 9H1', 'whopps@gmail.com', '6667891011');
 insert into clients values
-	('Anita', 'Limb', '111 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'ineedalimb@gmail.com', '100000000');
+    ('Anita', 'Limb', '111 41st AVE', 'Vancouver', 'BC', 'Canada', 'V5M 5H1', 'ineedalimb@gmail.com', '100000000');
 insert into clients values
-	('Ruth', 'Florence', '14 Willowdale Rd.', 'North York', 'ON', 'Canada', 'T7Z 5K2', 'rf@yahoo.com', '416788888');
+    ('Ruth', 'Florence', '14 Willowdale Rd.', 'North York', 'ON', 'Canada', 'T7Z 5K2', 'rf@yahoo.com', '416788888');
 insert into clients values
-	('Adrian', 'Thomas', '14 High St.', 'Calgary', 'AB', 'Canada', 'C6H K3L', 'herro@yahoo.com', '316788888');
+    ('Adrian', 'Thomas', '14 High St.', 'Calgary', 'AB', 'Canada', 'C6H K3L', 'herro@yahoo.com', '316788888');
 insert into clients values
-	('Seb', 'Thrun', '1 Tech Rd.', 'Saskatoon', 'SK', 'Canada', 'L8L 5K2', 'lol@yahoo.com', '88888888888');
+    ('Seb', 'Thrun', '1 Tech Rd.', 'Saskatoon', 'SK', 'Canada', 'L8L 5K2', 'lol@yahoo.com', '88888888888');
 insert into clients values
-	('Ken', 'Burns', '888 Montgomery AVE', 'Montreal', 'QC', 'Canada', 'H3A 2L1', 'erickburns@yahoo.com', '51488888888');
+    ('Ken', 'Burns', '888 Montgomery AVE', 'Montreal', 'QC', 'Canada', 'H3A 2L1', 'erickburns@yahoo.com', '51488888888');
 insert into clients values
-	('Charline', 'Kahn', '66 Beech AVE', 'Markam', 'ON', 'Canada', 'S8L 5K2', 'maybe@yahoo.com', '6588888888');
+    ('Charline', 'Kahn', '66 Beech AVE', 'Markam', 'ON', 'Canada', 'S8L 5K2', 'maybe@yahoo.com', '6588888888');
 insert into clients values
-	('Eli', 'Kowaz', '13 Greer St.', 'Saskatoon', 'SK', 'Canada', 'H8J 5U2', 'elik@yahoo.com', '99988888888');
+    ('Eli', 'Kowaz', '13 Greer St.', 'Saskatoon', 'SK', 'Canada', 'H8J 5U2', 'elik@yahoo.com', '99988888888');
 
 insert into supplies values
     ('Pablo', 'Picasso', 5556925253, 50, 12345);
@@ -243,7 +246,7 @@ insert into supplies values
     ('Weiwei', 'Ai', 5554656253, 50, 12347);
 
 insert into supplies values
-	('Shalah', 'Aghapour', 5556489898, 60, 12350);
+    ('Shalah', 'Aghapour', 5556489898, 60, 12350);
 insert into supplies values
     ('Lidia', 'Abdul', 7777777777, 50, 12351);
 insert into supplies values
@@ -256,7 +259,7 @@ insert into supplies values
     ('Karl', 'Abt', 5556489897, 50, 12376);
 
 insert into supplies values
-	('Leo', 'Davinc', 5666489895, 5556124553, 12366);
+    ('Leo', 'Davinc', 5666489895, 5556124553, 12366);
 insert into supplies values
     ('Sigmar', 'Polke', 5666489895, 50, 12367);
 insert into supplies values
@@ -291,3 +294,4 @@ insert into purchase_return values
 
 insert into receives_commission values
     (54324, 'Damien', 'Hirst', 5556489895, 29000);
+
