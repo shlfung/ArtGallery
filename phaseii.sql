@@ -14,13 +14,14 @@ create table clients
     pcode varchar(30),
     email varchar(30),
     phone varchar(30)not null,
-    PRIMARY KEY (fname, lname, phone))ENGINE=MyISAM;
+    PRIMARY KEY (fname, lname, phone));
 
 create table issue_transaction
   (transaction_id int not null PRIMARY KEY,
     fname varchar(30) not null,
     lname varchar(30) not null,
-    phone int not null);
+    phone int not null,
+	foreign key(fname, lname, phone) references client (fname, lname, phone));
 
 create table art
   (serial_number int not null PRIMARY KEY,
