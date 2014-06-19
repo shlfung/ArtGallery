@@ -48,19 +48,18 @@ create table purchase
     amount int,
     serial_number int not null,
     PRIMARY KEY (transaction_id, serial_number),
-    foreign key(transaction_id) references issue_transaction (transaction_id) on delete cascade,
+    foreign key(transaction_id) references issue_transaction (transaction_id),
     foreign key(serial_number) references art (serial_number) );
 
 create table purchase_return
   (transaction_id int not null,
     ret_date date,
     pur_type varchar(30),
-    id varchar(19),
     amount int,
     serial_number int not null,
     PRIMARY KEY (transaction_id, serial_number),
     foreign key (transaction_id) references issue_transaction (transaction_id) on delete cascade on update cascade,
-    foreign key (serial_number) references art (serial_number) on delete cascade on update cascade);
+    foreign key (serial_number) references art (serial_number) );
 
 create table artists
   (fname varchar(30) not null,
@@ -135,11 +134,11 @@ insert into artists values
   ('Sigmar', 'Polke', '1232-123 East 42nd St', 'New York', 'New York', 'U.S.A', '33242', 'hokeypokey@gmail.com', 5666489895, 'active');
 
 insert into art values
-    (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg', 0);
+    (12345, 'Dora Mar', 32000, 'http://upload.wikimedia.org/wikipedia/en/c/c3/Dora_Maar_Au_Chat.jpg', 1);
 insert into painting values
     (12345, 'Oil on Canvas', 'Western');
 insert into art values
-    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg', 0);
+    (12346, 'For The Love of God', 58000, 'http://upload.wikimedia.org/wikipedia/en/6/6d/Hirst-Love-Of-God.jpg', 1);
 insert into sculpture values
     (12346, 'Platinum and Diamonds', 'Modern');
 insert into art values
@@ -159,7 +158,7 @@ insert into art values
 insert into painting values
     (12350, 'Oil on Canvas', 'Western');
 insert into art values
-    (12351, 'Never Forget', 2000, 'http://www.dkimages.com/discover/Projects/JH806/previews/30000360.JPG', 0);
+    (12351, 'Never Forget', 2000, 'http://www.dkimages.com/discover/Projects/JH806/previews/30000360.JPG', 1);
 insert into painting values
     (12351, 'Pastel', 'Asian');
 insert into art values
@@ -279,15 +278,15 @@ insert into issue_transaction values
     (54325, 'Fred', 'Smith', 5555556364);
 
 insert into purchase values
-    (54321, 20140531, 'cash',21000, 12349);
+    (54322, 20140531, 'c',21000, 12351);
 insert into purchase values
-    (54323, 20140530, 'mc', 32000, 12345);
+    (54325, 20140530, 'mc', 32000, 12345);
 insert into purchase values
-    (54324, 20140531, 'visa', 80000, 12346);
+    (54324, 20140531, 'v', 80000, 12346);
 insert into purchase_return values
-    (54321, 20140602, 'cash', null, 21000, 12349);
+    (54321, 20140602, 'c', 21000, 12349);
 insert into purchase_return values
-    (54323, 20140602, 'mc', '3335 2324 1555 4555', 32000, 12345);
+    (54323, 20140602, 'mc', 32000, 12347);
 
 insert into receives_commission values
     (54324, 'Damien', 'Hirst', 5556489895, 29000);

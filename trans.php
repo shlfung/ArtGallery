@@ -71,7 +71,7 @@ Selling Price (in $):<input type="text" name="sellp">
         $ptype = $_POST['ptype'];
         $price = $_POST['sellp'];
         if(empty($_POST['sellp']) || empty($price) ||  (validate_number1($price) != 1)){
-            die("<div align='centre' class='error'>\nInvalid price input, transaction aborted</div>");
+            die("<div align='center' class='error'>\nInvalid price input, transaction aborted</div>");
         }
     
         //-------------------- adding to issue transaction ---------------------------
@@ -90,7 +90,6 @@ Selling Price (in $):<input type="text" name="sellp">
       }
       $newId++;
 
-//      $query = "insert into issue_transaction values ('$newId', '$first', '$last', '1234')";
       $cid = $_POST['cid'];
 //      echo "cid: $cid";
       $option = explode(",",$_POST['cid']);
@@ -99,7 +98,6 @@ Selling Price (in $):<input type="text" name="sellp">
       $phone = $option[2];
 
 //      echo "$first, $last, $phone";
-
       $query = "INSERT INTO issue_transaction VALUES($newId,'$first','$last','$phone')";
       $success = executePlainSQL($link, $query);
 //      echo "What came back from the db from inserting transaction: \n";
@@ -137,13 +135,16 @@ Selling Price (in $):<input type="text" name="sellp">
 }
 
   if (isset($_GET['return'])){
-  ?>
+    
+    ?>
+
     <form align="center" action='http://localhost/cs304/gallerydb.php' method='post'>
 
     <! ----------------------- purchase SELECTION ----------------------->
     Return Item:
-    <select name="select_work">
-    <?php
+    <select name="item">
+
+    <?php //----------------------------PHP
 
     $result = executePlainSQL($link,"SELECT * FROM purchase");
     while($row = mysqli_fetch_array($result)) {
@@ -158,8 +159,9 @@ Selling Price (in $):<input type="text" name="sellp">
         $tid =  $row['transaction_id'] ;
         echo "<option value=".$tid.'-'.$snum.">Title: " .$title." - Serial number: ".$snum." </option>";
 //        echo "<option value='0' />.$art.<option>"
-    }
-?>
+    }//------------------------------- PHP
+    ?>
+
     </select> <!-- from the end of the return item select button -->
 
     <! ----------------------- client SELECTION ----------------------->
@@ -175,44 +177,113 @@ Selling Price (in $):<input type="text" name="sellp">
             echo "<option value='".$fname.",".$lname.",".$phone."'>".$fname. ' '.$lname."</option>";
         }
         
-        ?>
-    </select><br/>
-    <button name='returnsql' type='submit' value='true'>Complete Return</button>
-    </br></form>
-
-<! ----------------------- TESTS TO REMOVE ----------------------->
-
-<!--  <div>TESTS</div> -->
-        <?php
+        
+    echo "</select><br/>";
+    echo "<button name='returnsql' type='submit' value='true'>Complete Return</button>";
+    echo "</br></form>";
  }
             
-            
-//    if(isset($_GET['return'])){
-//        $art = executePlainSQL($link, "Select * from Art a where (a.serial_number=$snum)");
-//        
-//        while($r = mysqli_fetch_array($art)){
-//            $title = $r['title'];
-//            echo $title;
-//            
-//        }
-//
-////        $echo "</div>";
-//    }
-
-    //submitting returns
-
-    //add to 'issue_transactions
-    //add to 'transaction_returns
-    //modify the art
+//modify the art
     if (isset($_POST['returnsql'])) {
-        echo "<br>HELLO</br>";
 
-        //            $query = "insert into artists values(");";
-        $success = executePlainSQL($link, $query);
-        if (is_string($success)) {
+        //get the item
+        $tidnsnum = explode("-",$_POST['item']);
+        $tid = $tidnsnum[0];
+        $snum = $tidnsnum[1];
+
+        $cid = $_POST['cid'];
+        $option = explode(",",$_POST['cid']);
+        $first = $option[0];
+        $last = $option[1];
+        $phone = $option[2];
+        
+        $art = executePlainSQL($link, "Select * from Art a where (a.serial_number=$snum)");
+        
+        $title = "";
+        while($r = mysqli_fetch_array($art)){
+            $title = $r['title'];
+            
+        }
+        //echo "$first, $last, $phone";
+        //$query = "INSERT INTO issue_transaction VALUES($newId,'$first','$last','$phone')";
+
+        //get the issue transation (to check client matches)!
+        $query = "select * from issue_transaction it where(it.transaction_id = $tid)";
+        $result = executePlainSQL($link, $query);
+        if (is_string($result)) {
             echo $success;
         }else{
-            echo "<p align=center >Artist Added successfully.</p>";
+//            echo "<p align='center' >Querried success!.</p>";
+        }
+        
+        //get the transaction (to get the user) - double check the user matches!
+        while($row = mysqli_fetch_array($result)) {
+            $fname1 =  $row['fname'] ;
+            $lname1 =  $row['lname'] ;
+            $phone1 = $row['phone'];
+//            echo "NAMES CORRESPONDING TO THIS TRANSACTION ----
+//            $fname1, $lname1, $phone1 ---- NAMES CORRESPONDNG TO INPUT STR $first, $last, $phone\n";
+        }
+        
+        if(strcmp($fname1,$first) != 0 || strcmp($phone1,$phone) != 0 || strcmp($lname1,$last) != 0 ){
+            die("<div align='center' class='error'>\nInvalid selection of client and return. Client and purchase do not match!</div>");
+
+        }else{
+            echo "<div align='center'>Processing return for client $first $last...</div>";
+        }
+
+        //get the purchase so you can copy over the info
+        $query = "select * from purchase p where(p.serial_number = $snum)";
+        $result = executePlainSQL($link, $query);
+        while($row = mysqli_fetch_array($result)) {
+            $ptype = $row['pur_type'];
+            $amnt = $row['amount'];
+        }
+       
+        $payment = '';
+        //amount to be refunded to CUSTOMER X for ART y
+        switch ($ptype) {
+            case "v":
+                $payment = 'Visa';
+                break;
+            case "mc":
+                $payment = 'Master Card';
+                break;
+            case "d":
+                $payment = 'Debit';
+                break;
+            default;
+                $payment = 'Cash';
+        }
+        echo "<table align='center'><tr><td>Please administer a refund to client " .$first. " " .$last. " in the amount of $" .$amnt. " for the return purchase of " .$title. " (serial number): " .$snum."</td></td></table>";
+        echo "<div align='center'>Refund Processesed</div>";
+
+
+        //now delete purchase
+        $query = "delete from purchase where (purchase.serial_number = $snum) AND (purchase.transaction_id = $tid)";
+        $result = executePlainSQL($link, $query);
+        if (is_string($result)) {
+            echo $result;
+        }else{
+//            echo "<p align='center' >Refund transaction details:</p>";
+        }
+
+        $date = date('Y-m-d H:i:s');
+        $query = "insert into purchase_return values ($tid, '$date', '$ptype', $amnt, $snum)";
+        $result = executePlainSQL($link, $query);
+        if (is_string($result)) {
+            echo $result;
+        }
+        
+        $query = "UPDATE Art SET art.sold = 0 where art.serial_number=$snum";
+        $success = executePlainSQL($link, $query);
+        //      echo "What came back from the db\n";
+        //      echo $success;
+        if (is_string($success)) {
+            //      echo $success;
+        }else{
+            echo "<p align=center >Art returned to purchaseable inventory.</p>";
+            
         }
 
     }
@@ -227,6 +298,7 @@ Selling Price (in $):<input type="text" name="sellp">
             return 1;
         }
     }
+        
 
 
-    ?>
+?>
