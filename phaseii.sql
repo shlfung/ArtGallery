@@ -20,8 +20,8 @@ create table issue_transaction
   (transaction_id int not null PRIMARY KEY,
     fname varchar(30) not null,
     lname varchar(30) not null,
-    phone int not null,
-	foreign key(fname, lname, phone) references client (fname, lname, phone));
+    phone varchar(30) not null,
+	foreign key(fname, lname, phone) references clients (fname, lname, phone));
 
 create table art
   (serial_number int not null PRIMARY KEY,
@@ -50,7 +50,7 @@ create table purchase
     serial_number int not null,
     PRIMARY KEY (transaction_id, serial_number),
     foreign key(transaction_id) references issue_transaction (transaction_id),
-    foreign key(serial_number) references art (serial_number) );
+    foreign key(serial_number) references art (serial_number));
 
 create table purchase_return
   (transaction_id int not null,
@@ -271,15 +271,15 @@ insert into supplies values
 
 
 insert into issue_transaction values
-    (54321, 'John', 'Doe', 5554356364);
+    (54321, 'John', 'Doe', '5554356364');
 insert into issue_transaction values
-    (54322, 'John', 'Doe', 5554356364);
+    (54322, 'John', 'Doe', '5554356364');
 insert into issue_transaction values
-    (54323, 'Fred', 'Smith', 5555556364);
+    (54323, 'Fred', 'Smith', '5555556364');
 insert into issue_transaction values
-    (54324, 'Donovan', 'St-Vincent', 5554354666);
+    (54324, 'Donovan', 'St-Vincent', '5554354666');
 insert into issue_transaction values
-    (54325, 'Fred', 'Smith', 5555556364);
+    (54325, 'Fred', 'Smith', '5555556364');
 
 insert into purchase values
     (54322, 20140531, 'c',21000, 12351);
