@@ -3,6 +3,7 @@ DROP DATABASE IF EXISTS GALLERYDB;
 CREATE DATABASE GALLERYDB;
 USE GALLERYDB;
 
+drop table if exists clients;
 create table clients
   (fname varchar(30) not null,
     lname varchar(30) not null,
@@ -13,14 +14,13 @@ create table clients
     pcode varchar(30),
     email varchar(30),
     phone varchar(30)not null,
-    PRIMARY KEY (fname, lname, phone));
+    PRIMARY KEY (fname, lname, phone))ENGINE=MyISAM;
 
 create table issue_transaction
   (transaction_id int not null PRIMARY KEY,
     fname varchar(30) not null,
     lname varchar(30) not null,
-    phone varchar(30)not null,
-	foreign key(fname, lname, phone) references clients (fname, lname, phone));
+    phone int not null);
 
 create table art
   (serial_number int not null PRIMARY KEY,
@@ -101,7 +101,7 @@ CREATE TRIGGER insUsr BEFORE INSERT ON clients
 
 CREATE TRIGGER deletePurchase before insert on purchase_return
     FOR EACH ROW
-    DELETE FROM purchase, WHERE transaction_id = New.transaction_id;
+    DELETE FROM purchase WHERE transaction_id = New.transaction_id;
 
 insert into artists values
   ('Pablo','Picasso', '5 Rue De Thorigny', 'Paris', 'Ile-de-France', 'France', '75003', 'guernica37@spain.com', 5556925253, 'inactive');
